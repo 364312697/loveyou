@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>邮箱配置</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body> 
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">SMTP邮箱配置</a></li>
+    </ul>
+    </div>
+    <div class="formbody"> 
+	<div class="topstyle">
+       <p>说明：请认真填写邮箱配置，用户留言、会员中心等功能都用到发送邮件功能.</p>
+    </div>	
+		<table class="tableweb">
+			<thead>
+			<tr>
+			<th width="16%">参数说明</th>
+			<th>参数值</th>
+			</tr>
+			</thead>
+			<tbody>
+			<form action="" method="post">
+		     <tr><td>SMTP服务器：</td><td><input type="text" name="mail_server" value="<?php echo $result['mail_server'] ?>"></td></tr>
+		     <tr><td>SMTP服务器端口：</td><td><input type="text" name="mail_port" value="<?php echo $result['mail_port'] ?>"></td></tr>
+		     <tr><td>SMTP服务器的用户邮箱：</td><td><input type="email" name="mail_from" value="<?php echo $result['mail_from'] ?>"></td></tr>
+		     <tr><td>AUTH LOGIN验证：</td><td><label class="float"><input type="radio" <?php if($result['mail_auth'] == 1) echo 'checked'; ?>  value="1"  name="mail_auth"  class="radio">开启</label>
+			 <label class="float"><input type="radio" <?php if($result['mail_auth'] == 0) echo 'checked'; ?>  value="0"  name="mail_auth" class="radio">关闭</label></td></tr>
+		     <tr><td>SMTP服务器的用户帐号：</td><td><input type="text" name="mail_user" value="<?php echo $result['mail_user'] ?>"></td></tr>
+		     <tr><td>SMTP服务器的用户密码：</td><td><input type="password" name="mail_pass" value="<?php echo $result['mail_pass'] ?>"></td></tr>
+		     <tr><td>邮件设置测试：</td><td><input type="email" name="mail_to" value="" class="wid200">&nbsp;
+			 <input  type="button" value="测试发送" onclick="javascript:test_mail();" class="but">[先保存，在发送]</td></tr>
+		     <tr class="buttr"><td colspan="2"><input type="submit" name="sub" class="but" value="保存"></td></tr>
+		     </form>
+			</tbody>
+		</table>
+    </div>
+<script>
+ function test_mail(){
+   var mail_to = $("input[name='mail_to']").val();
+   if(mail_to == ''){
+	    alert('请输入收件人地址！');
+		return false;
+   }
+   window.location.href='?send=1&mail_to='+mail_to;
+ }
+</script>	
+</body>
+</html>

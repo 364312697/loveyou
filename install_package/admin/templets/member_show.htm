@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>会员信息</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/member.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="member_list.php">会员管理</a></li>
+    <li><a href="#">会员信息</a></li>
+	</ul>
+    </div>    
+    <div class="rightinfo">
+	  <fieldset>
+		<legend>基本信息</legend>
+			<table width="100%" class="table_form">
+				<tr>
+					<td width="80">用户名</td> 
+					<td><?php echo $data['username']?> <span class="red"><a href="../member/myhome.php?userid=<?php echo $data['userid']; ?>" target="_blank">[查看主页]</a></span></td>
+				</tr>
+				<tr>
+					<td>注册时间</td>
+					<td>
+					<?php echo date('Y-m-d H:i:s',$data['regdate']).' ['.$data['regip'].']';?>
+					</td>
+				</tr>
+				<tr>
+					<td>最后登录</td>
+					<td>
+					<?php echo date('Y-m-d H:i:s',$data['lastdate']).' ['.$data['lastip'].']';?>
+					</td>
+				</tr>				
+				<tr>
+					<td>昵称</td> 
+					<td><?php echo $data['nickname']?></td>
+				</tr>
+				<tr>
+					<td>头像</td> 
+					<td><img src="<?php echo $data['userpic'] != '' ? $data['userpic'] : 'images/noimg.gif'?>" height="90" style="margin:10px"></td>
+				</tr>				
+				<tr>
+					<td>邮箱</td>
+					<td>
+					<?php echo $data['email_status'] ? $data['email'].' <span class="green">[已验证]</span>' : $data['email'];?>
+					</td>
+				</tr>
+				<tr>
+					<td>手机号码</td>
+					<td>
+					<?php echo $data['mobile']?>
+					</td>
+				</tr>
+				<tr>
+					<td>积分点数</td>
+					<td>
+					<?php echo $data['point']?>
+					</td>
+				</tr>				
+				<tr>
+					<td>会员组</td>
+					<td>
+					<?php echo $data['groupname']?>
+					</td>
+				</tr>
+				<tr>
+					<td>用户状态</td>
+					<td>
+					<?php if($data['status'] == 0){echo '待审核';}else if($data['status'] == 1){echo '正常';}else if($data['status'] == 2){echo '已锁定';}else{echo '已拒绝';}?>
+					</td>
+				</tr>					
+			</table>		
+	  </fieldset>
+	  <fieldset>
+		<legend>详细信息</legend>
+			<table width="100%" class="table_form">
+				<tr>
+					<td width="100">性别</td> 
+					<td><?php echo $data['sex']?></td>
+				</tr>
+				<tr>
+					<td>真实姓名</td> 
+					<td><?php echo $data['realname']?></td>
+				</tr>
+				<tr>
+					<td>安全问题及答案</td>
+					<td>
+					<?php echo $data['problem'].' '.$data['answer']?>
+					</td>
+				</tr>			
+				<tr>
+					<td>QQ</td>
+					<td>
+					<?php echo $data['qq']?>
+					</td>
+				</tr>
+				<tr>
+					<td>个人电话</td>
+					<td>
+					<?php echo $data['phone']?>
+					</td>
+				</tr>
+				<tr>
+					<td>生日</td>
+					<td>
+					<?php echo $data['birthday']?>
+					</td>
+				</tr>				
+				<tr>
+					<td>行业</td>
+					<td>
+					<?php echo $data['industry']?>
+					</td>
+				</tr>
+				<tr>
+					<td>所在地</td>
+					<td>
+					<?php echo $data['area']?>
+					</td>
+				</tr>				
+				<tr>
+					<td>个性签名</td>
+					<td>
+					<?php echo $data['motto']?>
+					</td>
+				</tr>
+				<tr>
+					<td>个人简介</td>
+					<td>
+					<?php echo $data['introduce']?>
+					</td>
+				</tr>				
+			</table>		
+	  </fieldset>	  
+    </div>		
+</body>
+</html>

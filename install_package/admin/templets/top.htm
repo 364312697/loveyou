@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>系统头部</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" src="js/jquery.js"></script>
+<script type="text/javascript">
+$(function(){	
+	//顶部导航切换
+	$(".nav li a").click(function(){
+		$(".nav li a.selected").removeClass("selected")
+		$(this).addClass("selected");
+	})	
+})	
+</script>
+</head>
+<body style="background:url(images/topbg.gif) repeat-x;">
+
+    <div class="topleft">
+    <a href="index.php" target="_parent"><img src="images/logo.jpg" title="系统首页" class="filtration"/></a>
+    </div>
+        
+    <ul class="nav">
+    <li><a href="default.php" target="rightFrame" class="selected"><img src="images/icon01.png" title="工作台" /><h2>工作台</h2></a></li>
+    <li><a href="img_table.php" target="rightFrame"><img src="images/icon02.png" title="图文资讯" /><h2>图文资讯</h2></a></li>
+    <li><a href="tools.php"  target="rightFrame"><img src="images/icon04.png" title="常用工具" /><h2>常用工具</h2></a></li>
+    <li><a href="filelock.php" target="rightFrame"><img src="images/icon05.png" title="文件管理" /><h2>文件管理</h2></a></li>
+    <li><a href="webinfo.php"  target="rightFrame"><img src="images/icon06.png" title="系统设置" /><h2>系统设置</h2></a></li>
+	<li><a href="member_list.php" target="rightFrame"><img src="images/icon07.png" title="会员管理" /><h2>会员管理</h2></a></li>
+    </ul>
+            
+    <div class="topright">    
+    <ul>
+    <li><a href="clearfile.php?clear=1" target="rightFrame">[清除缓存]</a></li>
+    <li><a href="../member/" target="_blank">[会员中心]</a></li>
+    <li><a href="../" target="_blank">[站点首页]</a></li>
+    <li><a href="http://www.yzmcms.com/" target="_blank">关于</a></li>
+    <li><a href="login.php?zx=out"  target="_parent">退出</a></li>
+    </ul>
+     
+    <div class="user">
+    <span><?php echo $_SESSION['adminname'];?></span>
+    <a href='manage_words.php'  target='rightFrame' title='未读消息' style="cursor:pointer"><i>未读消息</i>
+    <b><?php echo $res; ?></b>
+	</a>
+    </div>    
+    
+    </div>
+
+</body>
+</html>

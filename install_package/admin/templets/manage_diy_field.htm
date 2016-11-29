@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>字段管理</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="manage_diyform.php">自定义表单</a></li>
+    <li><a href="#">字段管理</a></li>
+    </ul>
+	<a href="add_diy_field.php?modelid=<?php echo $modelid;?>" class="add_link">[添加字段]</a>
+    </div>
+    
+    <div class="rightinfo">
+    <form method="post" action="">
+		<table class="tablelist">
+			<thead>
+			<tr>
+			<th width="70">排序</th>
+			<th>字段名</th>
+			<th>别名</th>
+			<th>类型</th>
+			<th>系统</th>
+			<th>必填</th>
+			<th>禁用</th>
+			<th>管理操作</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php 
+			   foreach($res as $val){
+			 ?>			
+			<tr>
+			<td><input name="listorder[<?php echo $val['fieldid']?>]" type="text" value="<?php echo $val['listorder']?>" <?php if($val['issystem']) echo 'disabled'; ?> class="ord"/></td>
+			<td><?php echo $val['field']?></td>
+			<td><?php echo $val['name']?></td>
+			<td><?php echo $val['formtype'];?></td>
+			<td><?php echo $val['issystem'] ? '<span class="red">是</span>' : '否'; ?></td>
+			<td><?php echo $val['isrequired'] ? '<span class="red">是</span>' : '否';?></td>
+			<td><?php echo $val['disabled'] ? '<span class="red">是</span>' : '否';?></td>
+			<td><a href="edit_diy_field.php?fieldid=<?php echo $val['fieldid']?>&modelid=<?php echo $modelid;?>" class="tablelink">[修改]</a> | 
+			<?php 
+			if(!$val['issystem']){
+			    echo '<a href="?fieldid='.$val['fieldid'].'&id='.$modelid.'" onclick="return confirm(\'你确定要删除吗？\')" class="tablelink">[删除]</a>';
+			}else{
+			    echo '<span style="color:#bebebe">[删除]<span>';
+			}
+			?>
+			</td>
+			</tr> 
+			<?php 
+			   }		 
+			?>			
+		   	<tr class="tablast">
+			 <td width="70"><input type="submit"  value="排序"  name="dosubmit" <?php if(!$res) echo 'disabled';?>></td><td colspan="8"></td>
+			</tr>
+			</tbody>
+		</table>
+	</form>			   
+    </div>
+</body>
+</html>

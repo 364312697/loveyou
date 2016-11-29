@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>前端搜索统计</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">前端搜索统计</a></li>
+    </ul>
+    </div>    
+    <div class="rightinfo">
+    <form method="post" action="">
+		<table class="tablelist">
+			<thead>
+			<tr>
+			<th width="100"><input type="checkbox"  onclick="cz(this)"/></th>
+			<th>搜索内容</th>
+			<th width="100">搜索次数</th>
+			<th width="250">最后搜索时间</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php 			
+			   foreach($res as $val){
+			 ?>			
+			<tr>
+			<td><input name="fx[]" type="checkbox" value="<?php echo $val['aid']?>" /></td>
+			<td><?php echo $val['keyword']?></td>
+			<td><?php echo $val['cou']?></td>
+			<td><?php echo date("Y-m-d H:i:s",$val['lasttime'])?></td>
+			</tr> 
+			<?php 
+			   }		 
+			?>			
+		   	<tr class="tablast">
+			 <td></td><td colspan="3"><input type="submit"  value="批量删除" onclick="return confirm('你确定要删除所选信息吗？')" name="pldel_sub"></td>
+			</tr>
+			</tbody>
+		</table>
+	</form>
+		<script>
+		var fx=document.getElementsByName("fx[]");
+		function cz(obj){
+		for(var i=0;i<fx.length;i++){
+			  fx[i].checked=obj.checked;
+			}
+		}
+		</script> 			   
+		<div class="pagin">
+			<div class="message">共<i class="blue"><?php echo $total?></i>条记录，共<i class="blue"><?php echo $page->total()?></i>页，当前显示第&nbsp;<i class="blue"><?php echo $page->getCpage()?>&nbsp;</i>页</div>
+			<div class="paginList">
+				<?php echo $page->showFull(); ?>
+			</div>
+		</div>
+    </div>
+</body>
+</html>

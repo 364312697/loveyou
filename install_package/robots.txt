@@ -1,0 +1,10 @@
+#
+# robots.txt for YzmCMS
+#
+User-agent: * 
+Disallow: /config
+Disallow: /templets
+Disallow: /core
+Disallow: /install
+Disallow: /plus/user.php
+Disallow: /plus/favorite.php

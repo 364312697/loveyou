@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	  <title><?php echo $title; ?></title>
+	  <link href="<?php echo $self_path;?>css/style.css" rel="stylesheet" type="text/css" />
+	  <script type="text/javascript" src="<?php echo $self_path;?>js/jquery-1.8.2.min.js"></script>
+	  <script type="text/javascript" src="<?php echo $self_path;?>js/js.js"></script>
+	  <meta name="keywords" content="<?php echo $wkeyword;?>" />
+	  <meta name="description" content="<?php echo $wdescription;?>" />
+	  <meta http-equiv="mobile-agent" content="format=xhtml;url=<?php echo $wroot;?>mobile/list.php?cid=<?php echo $cid;?>">
+      <script type="text/javascript">if(window.location.toString().indexOf('pref=padindex') != -1){}else{if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))){if(window.location.href.indexOf("?mobile")<0){try{if(/Android|Windows Phone|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)){window.location.href="<?php echo $wroot;?>mobile/list.php?cid=<?php echo $cid;?>";}else if(/iPad/i.test(navigator.userAgent)){}else{}}catch(e){}}}}</script>
+  </head>
+  <body>
+	    <?php include template('header.htm');?>
+		<div class="main_left">
+            <div class="ind_bt col46"><?php echo $location;?></div>
+			   <?php
+				//调用本栏目及子栏目下的前5篇文章
+				
+				//总条数
+				$total = $article->where($artile_where)->total();
+				$page = new page($total,5);
+				$start = $page->start_rows();
+				$res = $article->field('id,title,catid,url,abstract,inputtime,thumbnail,status')->where($artile_where)->order('`status` ASC,`inputtime` DESC')->limit("$start,5")->select();
+				
+
+                  foreach($res as $val){
+                      $val['thumbnail'] = $val['thumbnail']!='' ? $val['thumbnail'] : $default_thumb;				  
+					  echo '<div class="img_text_list">
+				  <a href="'.$val['url'].'"><img src="'.$val['thumbnail'].'" alt="'.$val['title'].'"></a>
+				  <span>['.get_catname($val['catid']).']</span><strong><a href="'.$val['url'].'">'.$val['title'].'</a></strong>
+				  <p>'.$val['abstract'].'<a  href="'.$val['url'].'">[详细]</a></p>
+				 </div>	';
+				  }
+				 ?>
+
+                 <div id="page">
+				  <ul>
+				   <li class="total">总条数:<?php echo $total?></li>
+				   <li class="fila"><?php echo $page->getHome()?></li>
+				   <li class="previous"><?php echo $page->getPre()?></li>
+				   <?php echo $page->getList()?>
+				   <li class="next"><?php echo $page->getNext()?></li>
+				   <li class="fila"><?php echo $page->getEnd()?></li>
+				  </ul>
+				 </div>					 
+		  </div>
+		 <div class="main_right">
+				<div id="jiaodian" class="tab">               
+					<div class="jiaodianbg"></div>
+					<div class="jiaodiantitle">
+					<?php 
+					$res = $article->field('id,inputtime,title,thumbnail,url')->where(get_sql_catid_thumb($column_res['id']))->limit("0,3")->order('inputtime DESC')->select();
+					$total = count($res);	
+					$i=0;
+					 foreach($res as $val){
+						$str = $i!=$total-1 ? 'none' : 'block';
+						echo '<a class="big_title" style="display: '.$str.'" href="'.$val['url'].'">'.cut_str($val['title'],17).'</a>';
+						$i++;
+					 } 
+					?>					
+					</div>
+					<div class="clearfix"></div>
+					<div class="big">
+					<?php
+					$i=0;
+					 foreach($res as $val){
+						$str = $i!=$total-1 ? 'none' : 'block';
+						echo '<div style="display: '.$str.'" id="f1-'.$i.'">
+						<a href="'.$val['url'].'"><img src="'.$val['thumbnail'].'" alt="'.$val['title'].'"></a>
+						</div>';
+						$i++;
+					   }										
+					?>
+					</div>
+					<div class="clearfix"></div>
+					<div class="small">
+						<ul>
+						<?php
+						  $i=0;
+						 foreach($res as $val){
+							$str = $i!=$total-1 ? '' : 'class="active"';
+							echo '<li '.$str.' rel="f1-'.$i.'"></li>';
+							$i++;
+						   }											
+						?>
+						</ul>
+					</div>
+				</div>
+				 <h2 class="ind_bt mtb_20">栏目推荐</h2>
+				 <?php 
+				  $res = $article->field('id,inputtime,title,thumbnail,url')->where("`display`=1 AND catid={$column_res['id']} AND FIND_IN_SET('4',status)")->limit("0,4")->order('inputtime DESC')->select();
+				  foreach($res as $val){
+                      $val['thumbnail'] = $val['thumbnail']!='' ? $val['thumbnail'] : $default_thumb;				  
+					  echo '<div class="img_text">
+				  <a href="'.$val['url'].'"><img src="'.$val['thumbnail'].'" alt="'.$val['title'].'"></a>
+				  <a href="'.$val['url'].'">'.$val['title'].'</a>
+				 </div>	';
+					  }
+				 ?>				 
+		 </div>		  	
+<?php include template('footer.htm');?>

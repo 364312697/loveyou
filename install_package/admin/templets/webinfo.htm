@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>网站基本信息设置</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body> 
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">网站基本信息设置</a></li>
+    </ul>
+	<a href="other_config.php" class="add_link">[网站附加设置]</a>
+    </div>
+	<div class="formbody">  
+		<table class="tableweb">
+			<thead>
+			<tr>
+			<th>参数说明</th>
+			<th>参数值</th>
+			</tr>
+			</thead>
+			<tbody>
+			 <form action="" method="post">
+		     <tr><td>站点根网址：</td><td><input type="text" name="wroot" value="<?php echo $re["wroot"]?>"></td></tr>		     
+		     <tr><td>网站名称：</td><td><input type="text" name="wname" value="<?php echo $re["wname"]?>"></td></tr>
+			 <tr><td>CMS安装目录：</td><td><input type="text" name="wpath" value="<?php echo $re["wpath"]?>"> [系统自动检测，一般不需要修改]</td></tr>
+		     <tr><td>网站版权信息：</td><td><input type="text" name="wcopyright" value="<?php echo $re["wcopyright"]?>"></td></tr>
+		     <tr><td>站点关键字：</td><td><input type="text" name="wkeyword" value="<?php echo $re["wkeyword"]?>"></td></tr>		    
+		     <tr><td>网站备案号：</td><td><input type="text" name="wfiling" value="<?php echo $re["wfiling"]?>"></td></tr>
+			 <tr class="area"><td>站点描述：</td><td><textarea name="wdescription"><?php echo $re["wdescription"]?></textarea></td></tr>
+			 <tr class="area"><td>统计代码：</td><td><textarea name="wcode"><?php echo $re["wcode"]?></textarea></td></tr>
+		     <tr class="buttr"><td colspan="2"><input type="reset" class="but" value="重置"><input type="submit" name="sub" class="but" value="确定"></td></tr>
+		     </form>
+			</tbody>
+		</table>
+    </div> 
+</body>
+</html>

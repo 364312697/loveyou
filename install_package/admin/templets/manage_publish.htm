@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>投稿管理</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/select.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">投稿管理</a></li>
+    </ul>
+	<a href="member_notice.php" class="add_link">[给会员发送消息]</a>
+    </div>    
+    <div class="rightinfo">
+    <form method="post" action="" onsubmit="return check_form()">
+		<table class="tablelist">
+			<thead>
+			<tr>
+			<th width='35'><input type="checkbox" onclick="cz(this)"/></th>
+			<th width='60'>ID号</th>
+			<th>文章标题</th>
+			<th width='55'>状态</th>
+			<th width='70'>点击数</th>
+			<th width='120'>发布人</th>
+			<th width='115'>文章分类</th>
+			<th width='140'>发布时间</th>
+			<th width='75'>操作</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php foreach($res as $val){ ?>			
+			<tr>
+			<td><input name="fx[]" type="checkbox" value="<?php echo $val['id']?>" /></td>
+			<td><?php echo $val['id']?></td>
+			<td><a href="edit_article.php?id=<?php echo $val['id']?>"><?php echo $val['title'];?></a></td>
+			<td><?php 
+			echo $val['display'] == '1'	? '<span class="green">已通过</span>' : ($val['display'] == '0'	? '未审核' : '<span class="red">退稿</span>');
+			?></td>
+			<td><?php echo $val['click']?></td>
+			<td><?php echo '<span style="color:blue;margin-left:3px;" title="会员发布">'.$val['username'].'[会]<span>';?></td>
+			<td><?php echo get_catname($val['catid']); ?></td>
+			<td><?php echo date("Y-m-d H:i:s",$val['inputtime'])?></td>
+			<td><a href="edit_article.php?id=<?php echo $val['id']?>" class="tablelink">修改</a>     <a href="../article.php?id=<?php echo $val['id']?>" target="_blank" class="tablelink"> 浏览</a></td>
+			</tr> 
+			<?php }	?>			
+		   	<tr class="tablast">
+			 <td></td><td colspan="8">
+			 <input type="submit"  value="删除" onclick="return confirm('你确定要删除所选信息吗？')" name="submit1">
+			 <input type="submit"  value="通过" name="submit2">
+			 <input value="退稿" type="button" onclick="show_mess()">
+			 </td>
+			</tr>
+			</tbody>
+		</table>
+		<table cellpadding='0' cellspacing='1' style="border:1px solid #006699;margin-top:5px;display:none;" id="mess"><tr><td colspan='2'><textarea name="content_c" style="width:300px;height:60px;margin:5px;padding:2px;border:1px solid #888"  onfocus="if(this.value == this.defaultValue) this.value = ''" onblur="if(this.value.replace(' ','') == '') this.value = this.defaultValue;">请输入退稿理由，退稿理由将会以短消息方式发送！</textarea></td><td><input type="submit" name="submit3" value='提交' class="dosubmit" onclick="reject_check(1)">&nbsp;</td></tr>
+		</table>
+	</form>
+		<script>
+		function show_mess(){
+		   $("#mess").toggle();
+		}
+		function check_form(){
+		   if ($("input[name='fx[]']:checked").length<1){
+		       alert('你还没有勾选信息呢？');
+		       return false;
+		   }
+		   return true;
+		}
+		var fx=document.getElementsByName("fx[]");
+		function cz(obj){
+		    for(var i=0;i<fx.length;i++){
+			  fx[i].checked=obj.checked;
+			}
+		}		
+		</script> 			   
+		<div class="pagin">
+			<div class="message">共<i class="blue"><?php echo $total?></i>条记录，共<i class="blue"><?php echo $page->total()?></i>页，当前显示第&nbsp;<i class="blue"><?php echo $page->getCpage()?>&nbsp;</i>页</div>
+			<div class="paginList">
+				<?php echo $page->showFull(); ?>
+			</div>
+		</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>系统默认页面</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">工作台</a></li>
+    </ul>
+    </div>   
+    <div class="mainbox">   
+    <div class="mainleft">   
+    
+    <div class="leftinfo">
+    <div class="listtitle"><a href="#" class="more1">更多</a>数据统计</div>
+        
+    <div class="maintj">  
+    <table id='myTable5'>
+				<caption>YzmCMS信息统计</caption>
+				<thead>
+					<tr>
+						<th>总计</th>
+						<th>置顶</th>
+						<th>头条</th>
+						<th>特荐</th>
+						<th>推荐</th>
+						<th>热点</th>
+						<th>幻灯</th>
+					</tr>
+				</thead>
+					<tbody>
+					<tr>
+						<th><?php echo $recount; ?></th>
+						<td><?php echo $zhiding; ?></td>
+						<td><?php echo $toutiao; ?></td>
+						<td><?php echo $tejian; ?></td>
+						<td><?php echo $tuijian; ?></td>
+						<td><?php echo $redian; ?></td>
+						<td><?php echo $huandeng; ?></td>
+					</tr>
+				</tbody>
+			</table>  
+    </div>
+    
+    </div>
+    <!--leftinfo end-->
+        
+    <div class="leftinfos">
+      
+    <div class="infoleft">
+    
+    <div class="listtitle">系统检测</div>    
+    <ul class="newlist">
+    <li>Web服务器: <b><?php echo $_SERVER["SERVER_SOFTWARE"];?></b></li>
+    <li>PHP版本: <b><?php echo PHP_VERSION;?></b></li>
+    <li>MySQL版本: <b><?php echo $article->version();?></b></li>
+    <li>服务器操作系统: <b><?php echo php_uname('s');?></b></li>
+    <li>最大上传限制: <b><?php echo ini_get("file_uploads") ? ini_get("upload_max_filesize") : "Disabled";?></b></li>
+    <li>最大执行时间: <b><?php echo ini_get("max_execution_time")."秒";?></b></li>
+    <li>服务器时间: <b><?php echo date("Y-m-d H:i:s",time());?></b></li>
+    </ul>    
+    
+    </div>
+      
+    <div class="inforight">
+    <div class="listtitle"><!-- <a href="#" class="more1">添加</a> -->常用工具</div>
+    
+    <ul class="tooli">
+    <li><span><img src="images/d01.png" /></span><p><a href="manage_info.php">信息管理</a></p></li>
+    <li><span><img src="images/d02.png" /></span><p><a href="manage_words.php">留言反馈</a></p></li>
+    <li><span><img src="images/d03.png" /></span><p><a href="manage_comment.php">评论管理</a></p></li>
+    <li><span><img src="images/d04.png" /></span><p><a href="search_take.php">搜索统计</a></p></li>
+    <li><span><img src="images/d05.png" /></span><p><a href="img_table.php">图文资讯</a></p></li>
+    <li><span><img src="images/d06.png" /></span><p><a href="member_point.php">积分交易</a></p></li>
+    <li><span><img src="images/d07.png" /></span><p><a href="manage_tag.php">TAG标签</a></p></li>    
+    </ul>
+    
+    </div>
+      
+    </div>    
+    </div>
+    <!--mainleft end-->
+       
+    <div class="mainright">
+       
+    <div class="dflist">
+    <div class="listtitle"><a href="manage_info.php" class="more1">更多</a>最近更新</div>    
+    <ul class="newlist">
+	<?php 
+	  if(!empty($res)) foreach($res as $val){
+		 echo '<li><a href="edit_article.php?id='.$val['id'].'" title="'.$val['title'].'">'.$val['title'].'</a></li>';
+	 }else echo '暂无数据!';				 
+	?>	
+    </ul>        
+    </div>
+     
+    <div class="dflist1">
+    <div class="listtitle"><!-- <a href="#" class="more1">更多</a> -->信息统计</div>    
+    <ul class="newlist">
+    <li><i>网站管理员：</a></i><?php echo $admin; ?></li>
+    <li><i>全部栏目：</a></i><?php echo $column; ?></li>
+    <li><i>全部文档：</a></i><?php echo $recount; ?></li>
+    <li><i>系统文档：</a></i><?php echo $xitong; ?></li>
+    <li><i>隐藏文档：</a></i><?php echo $display; ?></li>            
+    <li><i>留言板：</a></i><?php echo $guestbook; ?></li>            
+    </ul>        
+    </div>
+    
+    </div>
+    <!--mainright end-->   
+    </div>
+</body>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+	setWidth();
+	$(window).resize(function(){
+		setWidth();	
+	});
+	function setWidth(){
+		var width = ($('.leftinfos').width()-12)/2;
+		$('.infoleft,.inforight').width(width);
+	}
+</script>
+
+<script type="text/javascript" src="js/jsapi.js"></script>
+<script type="text/javascript" src="js/format+zh_CN,default,corechart.I.js"></script>		
+<script type="text/javascript" src="js/jquery.gvChart-1.0.1.min.js"></script>
+<script type="text/javascript" src="js/jquery.ba-resize.min.js"></script>
+<script type="text/javascript">
+		gvChartInit();
+		jQuery(document).ready(function(){
+
+		jQuery('#myTable5').gvChart({
+				chartType: 'AreaChart',
+				gvSettings: {
+					vAxis: {title: '信息/数量'},
+					//hAxis: {title: 'YzmCMS信息统计'},
+					width: 730,
+					height: 250
+					}
+			});
+		});
+</script>
+
+</html>

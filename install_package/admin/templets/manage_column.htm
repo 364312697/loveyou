@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>栏目管理</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">栏目管理</a></li>
+    </ul>
+    </div>
+    
+    <div class="formbody">
+	  <?php include('templets/big_menu.htm'); ?>
+	  <form action="" method="post">
+		<table class="tablelist">
+			<thead>
+			<tr>
+			<th width="70">排序</th>
+			<th width="50">栏目ID</th>
+			<th>栏目名称</th>
+			<th width="70">栏目类型</th>
+			<th width="60">栏目图片</th>
+			<th width="60">允许投稿</th>
+			<th width="170">操作</th>			
+			</tr>
+			</thead>
+			<tbody>
+			<?php 
+			   foreach($data as $val){
+			 ?>			
+			<tr>
+			<td><?php if($val["pid"]=="0") echo '<input type="text" class="ord" name="ord[]" value="'.$val["ord"].'"><input type="hidden" name="id[]" value="'.$val["id"].'">';?></td>
+			<td><?php echo $val['id']?></td>
+			<td><?php echo str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|-', count(explode(',',$val['abspath']))-2).$val['title'];?>
+			<?php if($val['type']=="1") echo '&nbsp;&nbsp;<a href="singlepage_content.php?catid='.$val['id'].'" class="tablelink">[单页内容]</a> ';?></td>
+			<td><?php echo $val['type']=="0" ? '内部栏目' : ($val['type']=="1" ? '<span class="green">单页面</span>' : '<span class="red">外部链接</span>');?></td>
+			<td><?php echo $val['column_img']=="" ? '无' : '<span class="blue">有</span>';?></td>
+			<td><?php echo $val['member_publish']=="1" ? '是' : '<span class="red">否</span>';?></td>
+			<td><a href="edit_column.php?id=<?php echo $val['id']?>&type=<?php echo $val['type']?>" class="tablelink">[修改]</a>  |  <a href="?id=<?php echo $val['id']?>" onclick="return confirm('你确定要删除吗？')" class="tablelink"> [删除]</a> | <a href="add_column.php?id=<?php echo $val['id']?>&type=<?php echo $val['type']?>" class="tablelink">[添加子类]</a> 			
+			</td>			
+			</tr> 
+			<?php 
+			   }		 
+			?>			
+		   	<tr class="tablast">
+			 <td width="70"><input type="submit"  name="dosubmit" value="排序" <?php if(!$data) echo 'disabled';?> /></td><td colspan="6"></td>
+			</tr>
+			</tbody>
+		</table>	   
+	  </form>
+    </div>
+
+</body>
+
+</html>

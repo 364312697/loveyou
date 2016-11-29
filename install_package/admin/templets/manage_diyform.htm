@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自定义表单管理</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">自定义表单管理</a></li>
+    </ul>
+	<a href="add_diyform.php" class="add_link">[添加自定义表单]</a>
+    </div>
+    
+    <div class="rightinfo">
+		<table class="tablelist">
+			<thead>
+			<tr>
+			<th>表单名称(信息数)</th>
+			<th>表名</th>
+			<th>简介</th>
+			<th>创建时间</th>
+			<th>状态</th>
+			<th>管理操作</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php 
+			   foreach($res as $val){
+			 ?>			
+			<tr>
+			<td><?php echo $val['name'].' ('.$val['items'].'条信息)';?></td>
+			<td><?php echo $val['tablename'];?></td>
+			<td><?php echo cut_str($val['description'],30); ?></td>
+			<td><?php echo date('Y-m-d H:i:s',$val['inputtime'])?></td>
+			<td><?php echo $val['disabled'] ? '<span class="red">禁用</span>' : '启用';?></td>
+			<td><a href="edit_diyform.php?id=<?php echo $val['modelid']?>" class="tablelink">[修改]</a> | <a href="?id=<?php echo $val['modelid']?>" onclick="return confirm('你确定要删除吗？该表也会删除！')" class="tablelink">[删除]</a> | <a href="manage_diy_field.php?id=<?php echo $val['modelid']?>" class="tablelink">[字段管理]</a> | <a href="manage_list_diyform.php?id=<?php echo $val['modelid']?>" class="tablelink">[信息列表]</a> | <a href="../plus/show_diyform.php?id=<?php echo $val['modelid']?>" target="_blank" class="tablelink">[前台浏览]</a></td>
+			</tr> 
+			<?php 
+			   }		 
+			?>			
+			</tbody>
+		</table>			   
+		<div class="pagin">
+			<div class="message">共<i class="blue"><?php echo $total?></i>条记录，共<i class="blue"><?php echo $page->total()?></i>页，当前显示第&nbsp;<i class="blue"><?php echo $page->getCpage()?>&nbsp;</i>页</div>
+			<div class="paginList">
+				<?php echo $page->showFull(); ?>
+			</div>
+		</div>
+    </div>
+</body>
+</html>

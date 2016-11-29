@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>信息发布</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/select.css" rel="stylesheet" type="text/css" />
+<link href="../common/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../common/umeditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="../common/umeditor/umeditor.min.js"></script>
+<script type="text/javascript" src="../common/js/laydate.js"></script>
+<script type="text/javascript" src="../common/js/jquery.form.js"></script>
+<script type="text/javascript" src="js/upload.js"></script>
+</head>
+<body>
+
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">发布信息</a></li>
+    </ul>
+    </div>
+    <div class="formbody">
+    <form action=""  method="post" name="add_article" onSubmit="return che()">
+		<div id="usual1" class="usual"> 	  
+		<ul class="forminfo">
+		<li class="clear">
+		  <label>文章标题<b>*</b></label><input name="title" id="title" type="text" class="input" value="" required style="width:518px;"/><i id="msg"></i>
+		</li>
+		<li class="clear"><label>文章栏目<b>*</b></label>		
+			<div class="usercity">
+			<div class="cityleft">
+			<?php  echo formselect('catid',$catid,'请选择栏目...'); ?>
+			</div>		
+			<div class="cityright file-box">
+				缩略图：
+				<div class="upbox">
+					<input type="text" name="thumbnail" value="" id="uphidden">
+					<span class="additional">添加附件</span>
+					<input id="fileupload" type="file" name="thumb">
+				</div>
+				<div class="progress">
+					<span class="bar"></span><span class="percent">0%</span><span class="filesize"></span>
+				</div>
+				<div class="files"></div>
+			</div>
+			<img src="../common/images/thumbnail.jpg" class="showimg">
+			</div>
+		</li>
+		<li class="clear">
+		  <label>关键字</label><input name="keyword" type="text" class="input" id="keyword" value=""  style="width:518px;"/>
+		</li>
+		<li class="clear" id="shuxing"><span>文章属性</span>
+			<label>置顶[1] <input name="status[]" type="checkbox" value="1"/></label>
+			<label>头条[2] <input name="status[]" type="checkbox" value="2"/></label>
+			<label>特荐[3] <input name="status[]" type="checkbox" value="3"/></label>
+			<label>推荐[4] <input name="status[]" type="checkbox" value="4"/></label>
+			<label>热点[5] <input name="status[]" type="checkbox" value="5"/></label>
+			<label>幻灯[6] <input name="status[]" type="checkbox" value="6" onclick="toggle()"/></label>
+			<label>显示本文<input name="display" type="checkbox" value="1" checked="checked" /></label>
+		</li>
+		<li style="display:none;clear:both;" id="url">
+		  <label>转向链接</label><input name="url" type="text" class="input" value=""  style="width:518px;"/><i>如不填写，则为系统默认</i>
+		</li>
+		<li class="clear">
+		<label>TAG标签</label>
+		 <span id="taglist"><?php  echo $tagstr;?></span>
+		</li>
+		<li class="clear">
+		<label>文章摘要</label><textarea name="abstract" class="abstract"></textarea><i>如不填写，则自动提取文章前200字符</i>
+		</li>			
+		<li class="clear">
+		 <span class="laiyuan">文章来源</span><input name="source" type="text" class="dfinput2 readonly" value="原创"/>
+		 <span class="dianji">点击数</span><input name="click" type="text" class="dfinput2 readonly" value="0"/>
+		 <span class="dianji">昵称</span><input name="nickname" type="text" class="dfinput2 readonly" value="<?php echo $_SESSION['userinfo']['nickname'] ? $_SESSION['userinfo']['nickname'] : '管理员'?>" required />
+		 <span class="dianji">发布时间</span><input value="<?php echo date('Y-m-d H:i:s'); ?>"  name="inputtime"  class="laydate-icon" onClick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" style="width:160px;height:26px;line-height:26px;padding:0 2px;">
+		</li>
+        <?php echo $article_data_str; ?>		
+		<li style="clear:both;"></li>
+		<li class="clear">文章内容<b>*</b><a href="javascript:void(0)" onclick="innerchai()" id="yijian">【一键内链】</a></li>
+		<li class="clear">		
+			<script type="text/plain" id="myEditor" style="width:800px;height:300px;" name="content"></script>	
+            <label title="提取文章第一张图片为缩略图" class="labeltu"><input name="auto_thum" type="checkbox" id="readpact" value="ok"  checked="checked" />提取文章第一张图片为缩略图</label>
+            <label title="远程图片本地化" class="labeltu"><input name="grab_img" type="checkbox" value="ok"/>远程图片本地化</label>				
+			<script type="text/javascript">
+				var um = UM.getEditor('myEditor');
+			</script>
+		</li>
+		<li class="clear"></li>
+		<li class="clear"><input name="dosubmit" type="submit" class="btn" value="马上发布"/></li>
+		</ul>		
+		</div> 
+    </form>   
+    </div>
+    <script type="text/javascript">
+	$(function() {   
+		$("#title").blur(function() { 
+            var title = $('#title').val();	
+            if(title == ''){
+				$('#title').addClass('input_error');
+				$('#msg').html('<img src="images/error.gif"> 文章标题不能为空！');
+				return false;
+			}			
+			$.ajax({   
+			type: "post",   
+			url: 'libs/ajax.class.php?a=check_title',     
+			dataType: "html",   
+			data: "title="+title,   
+			success: function(msg){
+			if(msg){
+				if(msg==0){
+					$('#title').addClass('input_error');
+					$('#msg').html('<img src="images/error.gif"> 该文章已存在！');
+				}else if(msg==1){
+					$('#title').removeClass('input_error');
+					$('#msg').html('<img src="images/ok.gif">');
+				}else{
+					alert('Ajax通信失败！');
+				}
+			}  
+			}  
+			});   
+		});    
+	});	
+	function toggle(){ 
+      $("#url").toggle(300);
+    }
+	function innerchai(){
+	  var content=UM.getEditor('myEditor').getContent();
+	  <?php 
+	  $res = M('innerlink')->field('val,link')->select();
+		foreach($res as  $value){
+			echo "content = content.replace(/{$value['val']}/g,\"<a href='http://".$value['link']."'>{$value['val']}</a>\");";		  
+		}			
+	  ?>	  
+	  UM.getEditor('myEditor').setContent(content);	
+	}	 
+	function che(){
+			if($('.input_error').val()){
+				    alert("该文章已存在！");
+					return false;
+			  }	
+			 if(add_article.title.value==""){
+					 alert("文章标题不能为空!");
+					return false;
+			  }	
+			  if(add_article.catid.value=="0"){
+					 alert("请选择文章栏目!");
+					return false;
+			  }
+			  if(!UM.getEditor('myEditor').hasContents()){
+					 alert("文章内容不能为空!");
+					return false;
+			  }
+	}
+	</script>
+	<script type="text/javascript">		
+	$(function(){  
+	  //将TAG的选中的值赋值给keyword
+		var count = 0;	
+		$("#taglist :checkbox").click(function(){
+		var txtvalue = $(this).parent().text();
+			if ($("#keyword").val() == ""){
+				if ($(this).prop("checked") == true){
+					var txtalso = $.trim(txtvalue);
+				} else {
+					var txtalso = "";
+				}
+			}
+			else {
+				if ($(this).prop("checked") == true){
+					var txtalso = $.trim($("#keyword").val()) + "," + $.trim(txtvalue);
+				}
+				else {
+					var txtelse = $.trim($("#keyword").val());
+					var txtnow = $.trim(txtvalue);
+					var reg1 = "," + txtnow;
+					var reg2 = txtnow + ",";
+					var reg3 = txtnow;
+					var txtelse = txtelse.replace(reg1, "").replace(reg2, "").replace(reg3, "");
+					var txtalso = txtelse;
+				}
+			}
+			$("#keyword").val(txtalso);
+			count++;
+		});
+		
+	});
+	</script>
+</body>
+</html>

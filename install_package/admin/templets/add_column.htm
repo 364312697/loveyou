@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>添加栏目</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.idTabs.min.js"></script>
+<script type="text/javascript" src="js/pinyin.js"></script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">添加栏目</a></li>
+    </ul>
+    </div>    
+    <div class="formbody">
+    <?php include('templets/big_menu.htm');?>	
+    <div id="usual1" class="column_box"> 
+      <form action="" method="post" enctype="multipart/form-data" onSubmit="return check()">			
+		<div class="itab">
+		<ul> 
+		<li><a href="#tab1" class="selected">基本选项</a></li> 
+		<li><a href="#tab2">模板设置</a></li> 
+		<li><a href="#tab3">SEO设置</a></li> 
+		</ul>
+		</div>
+        
+		<div id="tab1" class="column_list">			
+			<div class="formbody">
+            <div class="col_line">			
+			 <span>上级栏目：</span>
+             <?php  echo formselect('pid', $id, '', false); ?>
+			 </div>
+			<div class="col_line"><span>栏目名称：</span>	
+			  <input type="text" required name="title" size="20" value="" onblur="pinyinquery()">
+			</div>
+			<div class="col_line"><span>英文目录：</span>	
+			  <input type="text" required name="dir" size="20" value="">
+			</div>
+			<div class="col_line"><span>栏目图片：</span>	
+			  <input type="file" name="column_img" size="30" />
+			</div>
+			<div class="col_line"><span>手机版地址：</span>	
+			  <input type="text" name="moblink"  size="50" /> <span style="color:#888">*为空则系统默认</span>
+			</div>			
+			<div class="col_line">
+			<span>是否在导航显示：</span>	
+				<label><input type="radio" class="radio" name="display" value="1" checked="checked">是 </label>&nbsp;&nbsp;
+				<label><input type="radio" class="radio" name="display" value="0">否</label>
+            </div>				
+			<div class="col_line">
+			<span>是否允许会员投稿：</span>	
+				<label><input type="radio" class="radio" name="member_publish" value="1">是 </label>&nbsp;&nbsp;
+				<label><input type="radio" class="radio" name="member_publish" value="0"  checked="checked">否</label>
+            </div>								
+			</div>		
+		</div>    
+		<div id="tab2" class="column_list">
+			<div class="formbody">
+			<div class="col_line"><span>栏目列表页模板：</span>
+			  <select name="list_template">
+			  <option value='0' selected="selected">请选择列表页模板</option>
+              <?php 
+			   foreach($list_temp as $key => $val){
+				   echo '<option value='.$key.'>'.$val.'('.$key.')</option>';
+			   }
+			  ?>			
+			  </select>	
+			</div>
+			<div class="col_line"><span>栏目内容页模板：</span>	
+			  <select name="article_template">
+			  <option value='0' selected="selected">请选择内容页模板</option>
+              <?php 
+			   foreach($article_temp as $key=>$val){
+				   echo '<option value='.$key.'>'.$val.'('.$key.')</option>';
+			   }
+			  ?>
+			  </select>	
+			</div>				
+			</div>		
+		</div>  		
+		<div id="tab3" class="column_list">
+			<div class="formbody">			
+			<div class="col_line"><span>　栏目标题：</span>	
+			  <input type="text" name="seo_title"  size="60" />
+			</div> 
+			<div class="col_line2"><span>栏目关键词：</span>	
+			  <textarea name="seo_keywords" class="textarea"></textarea>
+			</div>			
+			<div class="col_line2"><span>　栏目描述：</span>	
+			  <textarea name="seo_description" class="textarea"></textarea>
+			</div>						
+			</div>		
+		</div> 
+		<input type="submit" class="dosubmit" name="dosubmit" value="提交" />
+      </form>			
+	</div> 
+	  <script type="text/javascript" src="js/check.js"></script> 
+    </div>
+    <script type="text/javascript">
+	function pinyinquery(){
+		var pinyin = codefans_net_CC2PY($("input[name='title']").val());
+	    $("input[name='dir']").val(pinyin.toLowerCase());
+	}		
+	function check(){
+		     var reg = /^[A-Za-z0-9]+$/;
+			 if($("input[name='title']").val()==''){
+				 alert('栏目名称不能为空！');
+				 return false;
+			 }
+             if($("input[name='dir']").val()==''){
+				 alert('栏目目录不能为空！');
+				 return false;
+			 }
+             if(!reg.test($("input[name='dir']").val())){
+				 alert('栏目目录只能是拼音或英文字符！');
+				 return false;
+			 }
+             if($("select[name='list_template']").val()=='0'){
+				 alert('请选择列表页模板！');
+				 $(".itab ul li:nth-child(1) a").removeClass('selected');
+				 $(".itab ul li:nth-child(2) a").addClass('selected');
+				 $("#tab1").css('display','none');
+				 $("#tab2").css('display','block');
+				 return false;
+			 }
+             if($("select[name='article_template']").val()=='0'){
+				 alert('请选择内容页模板！');
+				 return false;
+			 }			 
+	}
+	</script>	
+</body>
+</html>

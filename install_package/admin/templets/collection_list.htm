@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>采集列表</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="manage_collection.php">采集节点管理</a></li>	
+    <li><a href="#">采集列表</a></li>
+    </ul>
+	<a href="add_collection.php" class="add_link">[添加采集节点]</a>
+    </div>
+    
+    <div class="rightinfo">
+	<div class="topstyle">
+	<form action="" method="get">
+    <ul class="seachform">   
+    <li>
+    <select class="select3" name="searkey">
+    <option <?php if(isset($_GET["searkey"]) && $_GET["searkey"]=='nodeid'){echo "selected";} ?> value="nodeid">节点ID</option>
+    <option <?php if(isset($_GET["searkey"]) && $_GET["searkey"]=='title'){echo "selected";} ?> value="title">标题</option>
+    </select>
+    </li>
+    <li>
+    <select class="select3" name="status">
+    <option value="99">内容状态</option>
+    <option <?php if(isset($_GET["status"]) && $_GET["status"]=='0'){echo "selected";} ?> value="0">未采集</option>
+    <option <?php if(isset($_GET["status"]) && $_GET["status"]=='1'){echo "selected";} ?> value="1">已采集</option>	
+    <option <?php if(isset($_GET["status"]) && $_GET["status"]=='2'){echo "selected";} ?> value="2">已导入</option>
+    </select>
+    </li>	
+    <li><input name="searinfo" type="text" class="scinput" value="<?php if($nodeid) echo $nodeid; elseif(isset($_GET["searinfo"])) echo $_GET["searinfo"] ?>"/></li>	
+    <li><label>&nbsp;</label><input type="submit" class="scbtn" name="search" value="搜索"/></li>   
+    </ul>
+    </form>	
+	</div>	
+    <form method="post" action="" id="myform">
+	    <input type="hidden" name="nodeid" value="<?php echo $nodeid;?>">
+		<table class="tablelist">
+			<thead>
+			<tr>
+			<th><input type="checkbox"   onclick="cz(this)"/></th>
+			<th>节点ID</th>
+			<th>内容状态</th>
+			<th>标题</th>
+			<th>网址</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php 
+			   foreach($res as $val){
+			 ?>			
+			<tr>
+			<td><input name="fx[]" type="checkbox" value="<?php echo $val['id']?>" /></td>
+			<td><?php echo $val['nodeid']?></td>
+			<td><?php echo $val['status']=='0' ? '<span class="red">未采集<span>' : ($val['status']=='1' ? '<span class="green">已采集<span>' : '已导入');?></td>
+			<td><?php echo $val['title'] ?></td>
+			<td><?php echo $val['url']?></td>
+			</tr> 
+			<?php 
+			   }		 
+			?>			
+		   	<tr class="tablast">
+			 <td></td><td colspan="4"> <input type="submit"  value="导入选中" onclick="re_url('collection_content_import.php');return check_checkbox()" name="dosubmit"> <input type="submit"  value="批量删除" onclick="re_url('collection_list.php',1);return check_checkbox(1)" name="dosubmit"> <input type="submit"  value="节点删除" onclick="re_url('collection_list.php',1);return confirm('你确定要删除此节点的所有信息吗？')" name="dosubmit_all"></td>
+			</tr>
+			</tbody>
+		</table>
+	</form>
+		<script>
+		var fx=document.getElementsByName("fx[]");
+		function cz(obj){
+		for(var i=0;i<fx.length;i++){
+			  fx[i].checked=obj.checked;
+			}
+		}
+		
+		function check_checkbox(obj){ 
+			if ($("input[name='fx[]']:checked").length<1){
+			   alert('你还没有勾选信息呢？');
+			   return false;
+			}else{
+				if(obj){
+					if(confirm('您确定要删除吗？')){
+					    return true;
+					}else{
+					    return false;
+					}
+				}
+				return true;
+			}
+		}
+
+		function re_url(url){  
+			$('#myform').attr("action",url);
+			var meth = arguments[1] ? arguments[1] : 0;
+			if(meth == 0){
+			    $('#myform').attr("method","get");
+			}else{
+			    $('#myform').attr("method","post");
+			}
+		}  		
+		</script> 			   
+		<div class="pagin">
+			<div class="message">共<i class="blue"><?php echo $total?></i>条记录，共<i class="blue"><?php echo $page->total()?></i>页，当前显示第&nbsp;<i class="blue"><?php echo $page->getCpage()?>&nbsp;</i>页</div>
+			<div class="paginList">
+				<?php echo $page->showFull(); ?>
+			</div>
+		</div>
+    </div>
+</body>
+</html>

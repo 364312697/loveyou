@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>数据备份</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="f8"> 
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">数据备份</a></li>
+    </ul>
+    </div>
+	<div class="formbody">  
+		<div class="datashow">
+		  <?php 
+			if(isset($_POST["dosubmit"])){
+			    echo '<div id="msg_info">        	
+						<div id="msgtit">提示信息</div>
+						<div id="msgbody">					 
+						<div id="info">';
+				        $db->backup('','./data/',intval($_POST['backsize']));
+				echo    '</div>
+						</div>
+					 </div>';
+				exit;					
+			}			   
+		  ?>
+		</div>	
+		<table class="tableweb">
+			<thead>
+			<tr>
+			<th>数据库</th>
+			<th>数据表</th>
+			</tr>
+			</thead>
+			<tbody>
+			 <form action="" method="post">
+			 <?php 
+				$res = $admin->list_tables();
+				foreach($res as $v){
+					echo '<tr><td>'.DB_NAME.'</td><td>'.$v.'</td></tr>';
+				}
+			 ?>
+		     <tr class="buttr"><td>每个分卷文件大小：<input type="text" name="backsize"  value="2048" class="duaninput">KB（即：2M）</td><td><input type="submit" name="dosubmit" class="but" value="开始备份"></td></tr>
+		     </form>
+			</tbody>
+		</table>
+	
+    </div> 
+</body>
+</html>

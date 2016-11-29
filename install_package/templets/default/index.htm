@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	  <title> <?php echo $wname; ?> </title>
+	  <link href="<?php echo $self_path;?>css/index.css" rel="stylesheet" type="text/css" />
+	  <script type="text/javascript" src="<?php echo $self_path;?>js/jquery-1.8.2.min.js"></script>
+	  <script type="text/javascript" src="<?php echo $self_path;?>js/js.js"></script>
+	  <script type="text/javascript" src="<?php echo $self_path;?>js/jquery.lazyload.min.js"></script>
+	  <meta name="keywords" content="<?php echo $wkeyword;?>" />
+	  <meta name="description" content="<?php echo $wdescription;?>" />
+	  <meta http-equiv="mobile-agent" content="format=xhtml;url=mobile/index.php">
+      <script type="text/javascript">if(window.location.toString().indexOf('pref=padindex') != -1){}else{if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))){if(window.location.href.indexOf("?mobile")<0){try{if(/Android|Windows Phone|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)){window.location.href="mobile/index.php";}else if(/iPad/i.test(navigator.userAgent)){}else{}}catch(e){}}}}</script>
+  </head>
+  <body>
+  <script type="text/javascript" charset="utf-8">
+  $(function() {
+      $("img.lazy").lazyload({effect: "fadeIn"});
+  });
+  </script>
+	   <?php include template('header.htm');?>			
+		<div class="box">
+		  <div class="left">
+				<div id="jiaodian" class="tab">               
+					<div class="jiaodianbg"></div>
+					<div class="jiaodiantitle">
+					<?php 
+					$res = $article->field('id,inputtime,title,thumbnail,url')->where(array('display'=>1,'thumbnail!='=>''))->limit("0,6")->order('inputtime DESC')->select();
+					$total = count($res);	
+					$i=0;
+					 foreach($res as $val){
+						$str = $i!=$total-1 ? 'none' : 'block';
+						echo '<a target="_blank" class="big_title" style="display: '.$str.'" href="'.$val['url'].'">'.cut_str($val['title'],20).'</a>';
+						$i++;
+					 } 
+					?>					
+					</div>
+					<div class="clearfix"></div>
+					<div class="big">
+					<?php
+					$i=0;
+					 foreach($res as $val){
+						$str = $i!=$total-1 ? 'none' : 'block';
+						echo '<div style="display: '.$str.'" id="f1-'.$i.'">
+						<a target="_blank" href="'.$val['url'].'"><img src="'.$val['thumbnail'].'" alt="'.$val['title'].'"></a>
+						</div>';
+						$i++;
+					   }										
+					?>
+					</div>
+					<div class="clearfix"></div>
+					<div class="small">
+						<ul>
+						<?php
+						  $i=0;
+						 foreach($res as $val){
+							$str = $i!=$total-1 ? '' : 'class="active"';
+							echo '<li '.$str.' rel="f1-'.$i.'"></li>';
+							$i++;
+						   }											
+						?>
+						</ul>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			  <div class="left_bottom">
+		        	<h2><a href="#" target="_blank">更多>></a><span>TAG标签</span></h2>
+					<div class="new_ct">
+                    <ul>
+                    <?php
+					 $res = $tag->order('inputtime DESC')->limit('0,22')->select();
+					 foreach($res as $val){
+					   echo '<li><a href="plus/search.php?tag='.$val['tag'].'" target="_blank">'.$val['tag'].'</a></li>';
+					 }
+					?>					                	
+					</ul>
+					</div>
+		      </div>			  
+		  </div>		  
+		  <div class="center pad_0">
+			  <div class="center_top">
+			  
+				<strong class="top_title">特别推荐</strong>
+				<ul>
+                <?php
+				  $res = $article->field('id,title,inputtime,url')->where("`display`=1 AND FIND_IN_SET('3',status)")->order('inputtime DESC')->limit('0,5')->select();
+				  foreach($res as $val){
+						echo '<li>-<span>'.date('m-d',$val['inputtime']).'</span><a href="'.$val['url'].'" title="'.$val['title'].'" target="_blank">'.cut_str($val['title'],22).'</a></li>';
+				  }
+				?>
+                </ul>
+		      </div>
+			  <div class="center_bottom new_list">
+			    <strong class="top_title top_bor">最近更新</strong>
+				<ul>
+				  <?php
+				  $res = $article->field('id,title,url')->where(array('display'=>1))->order('inputtime DESC')->limit('0,10')->select();
+				  foreach($res as $val){
+						echo '<li>-<a href="'.$val['url'].'" title="'.$val['title'].'" target="_blank">'.cut_str($val['title'],23).'</a></li>';
+				  }
+				?>	 
+				</ul>
+		
+		      </div>		
+		  </div>
+		  <div class="right">
+			  <div class="right_top">
+			   <?php 
+			     $column_res = M('column')->where(array('pid'=>'0','type'=>'0'))->select();
+			   ?>
+		         <h2 class="ind_bt"><a  href="<?php echo $column_res[0]['pclink']; ?>" target="_blank" class="gengduo">更多>></a><?php echo $column_res[0]['title']; ?></h2>
+                  <a href="<?php echo $column_res[0]['pclink']; ?>" target="_blank"><img src="<?php echo $column_res[0]['column_img']!='' ? $column_res[0]['column_img'] : $wroot.'common/images/column_img.jpg'; ?>" title="<?php echo $column_res[0]['title']; ?>" alt="<?php echo $column_res[0]['title']; ?>"></a>
+				  
+				  <?php
+				  //调用本栏目下的第一篇文章
+				  $res = $article->field('id,title,url,abstract')->where(get_sql_catid($column_res[0]['id']))->order('inputtime DESC')->find();
+				  ?>	
+				  <a href="<?php echo $res['url']; ?>" target="_blank" class="ptitle"><?php echo cut_str($res['title'],15); ?></a>
+                  <p class="pic_p"><?php echo cut_str($res['abstract'],20); ?><a href="<?php echo $res['url']; ?>" target="_blank">[详细]</a></p>
+		      </div>
+			  <div class="right_bottom">
+			      <?php
+				  //调用本栏目下的第一篇带图的文章
+				  $res = $article->field('id,title,url,thumbnail,abstract')->where(get_sql_catid_thumb($column_res[0]['id']))->order('inputtime DESC')->find();
+				  if($res){
+				 ?>
+				  <a href="<?php echo $res['url']; ?>" target="_blank"><img src="<?php echo $res['thumbnail']; ?>" title="<?php echo $res['url']; ?>" alt="<?php echo $res['title']; ?>"></a>
+				  <a href="<?php echo $res['url']; ?>" target="_blank" class="ptitle ptitle12"><?php echo $res['title']; ?></a>
+                  <p class="pic_p"><?php echo cut_str($res['abstract'],30); ?><a href="<?php echo $res['url']; ?>" target="_blank">[详细]</a></p>
+				 <?php
+				    }
+				  ?>		          
+		      </div>		
+		  </div>		  
+		</div>
+         <div class="clearfix"></div>
+		<div class="box">
+			<div class="left">
+              <div class="guanzhubox">
+                 <h2 class="ind_bt"><a  href="<?php echo $column_res[1]['pclink']; ?>" target="_blank" class="gengduo">更多>></a><?php echo $column_res[1]['title']; ?></h2>
+		      </div>
+			  <div class="list_news">
+					<ul>
+				  <?php
+				  //调用本栏目下的前十篇文章
+				  $res = $article->field('id,title,url')->where(get_sql_catid($column_res[1]['id']))->order('inputtime DESC')->limit('0,11')->select();
+                  foreach($res as $val){
+					  echo '<li><a href="'.$val['url'].'" title="'.$val['title'].'" target="_blank">'.cut_str($val['title'],23).'</a></li>';
+				  }
+				 ?>
+					 
+				</ul>            
+		      </div>
+			</div>
+		  <div class="center">
+              <h2 class="ind_bt"><a  href="<?php echo $column_res[2]['pclink']; ?>" target="_blank" class="gengduo">更多>></a><?php echo $column_res[2]['title']; ?></h2>
+			  <div class="center_bottom">
+				<ul>
+				  <?php
+				  //调用本栏目下的前十篇文章
+				  $res = $article->field('id,title,url')->where(get_sql_catid($column_res[2]['id']))->order('inputtime DESC')->limit('0,11')->select();
+                  foreach($res as $val){
+					  echo '<li>-<a href="'.$val['url'].'" title="'.$val['title'].'" target="_blank">'.cut_str($val['title'],23).'</a></li>';
+				  }
+				 ?>
+				</ul>
+		
+		      </div>		
+		  </div>
+		  <div class="right">
+			  <div class="guanzhubox">
+                 <h2 class="ind_bt"><a  href="<?php echo $column_res[3]['pclink']; ?>" target="_blank" class="gengduo">更多>></a><?php echo $column_res[3]['title']; ?></h2>
+		      </div>
+			  <div class="list_news">
+					<ul>
+				  <?php
+				  //调用本栏目下的前十篇文章
+				  $res = $article->field('id,title,url')->where(get_sql_catid($column_res[3]['id']))->order('inputtime DESC')->limit('0,11')->select();
+                  foreach($res as $val){
+					  echo '<li><a href="'.$val['url'].'" title="'.$val['title'].'" target="_blank">'.cut_str($val['title'],21).'</a></li>';
+				  }
+				 ?>
+					 
+				</ul>            
+		      </div>		
+		  </div>		  
+		</div>	
+         <div class="clearfix"></div>
+		<div class="box">
+			<div class="left">
+				 <h2 class="ind_bt"><a  href="<?php echo $column_res[4]['pclink']; ?>" target="_blank" class="gengduo">更多>></a><?php echo $column_res[4]['title']; ?></h2>
+				 <?php
+				  //调用本栏目下的前3篇带缩略图的文章
+				  $res = $article->field('id,title,url,thumbnail,abstract')->where(get_sql_catid_thumb($column_res[4]['id']))->order('inputtime DESC')->limit('0,3')->select();
+                  foreach($res as $val){
+					  echo '<div class="img_text">
+				  <a href="'.$val['url'].'" target="_blank"><img src="'.$val['thumbnail'].'" alt="'.$val['title'].'"></a>
+				  <strong><a href="'.$val['url'].'" target="_blank">'.cut_str($val['title'],15).'</a></strong>
+				  <p>'.cut_str($val['abstract'],30).'<a  href="'.$val['url'].'" target="_blank">[详细]</a></p>
+				 </div><div class="clearfix"></div>';
+				  }
+				 ?>						 
+			</div>
+		  <div class="center">
+               <h2 class="ind_bt"><a  href="<?php echo $column_res[5]['pclink']; ?>" target="_blank" class="gengduo">更多>></a><?php echo $column_res[5]['title']; ?></h2>
+			  <div class="center_bottom">
+				<ul>
+				  <?php
+				  //调用本栏目下的前十篇文章
+				  $res = $article->field('id,title,url')->where(get_sql_catid($column_res[5]['id']))->order('inputtime DESC')->limit('0,11')->select();
+                  foreach($res as $val){
+					  echo '<li>-<a href="'.$val['url'].'" title="'.$val['title'].'" target="_blank">'.cut_str($val['title'],23).'</a></li>';
+				  }
+				 ?>
+					 
+				</ul>
+		
+		      </div>		
+		  </div>
+		  <div class="right">
+			  <div class="guanzhubox">
+		        <h2 class="ind_bt"><a  href="<?php echo $column_res[6]['pclink']; ?>" target="_blank" class="gengduo">更多>></a><?php echo $column_res[6]['title']; ?></h2>
+		      </div>
+			  <div class="list_news">
+ 				<ul>	
+                <?php
+				  //调用本栏目下的前10篇文章
+				  $res = $article->field('id,title,url')->where(get_sql_catid($column_res[6]['id']))->order('inputtime DESC')->limit('0,11')->select();
+                  foreach($res as $val){
+					  echo '<li><a href="'.$val['url'].'" title="'.$val['title'].'" target="_blank">'.cut_str($val['title'],21).'</a></li>';
+				  }
+				 ?>									 
+				</ul>               
+		      </div>		
+		  </div>		  
+		</div>		
+         <div class="clearfix"></div>		 
+         <div class="news_img">
+		   <h2 class="ind_bt tit_img"><a  href="#" target="_blank" class="gengduo">更多>></a>图文资讯</h2>
+			  <div class="w185_imgnews">
+ 				<ul>
+                   <?php 	
+					$res = $article->field('id,title,thumbnail,url')->where(array('display'=>1,'thumbnail!='=>''))->limit("0,5")->order('inputtime DESC')->select();
+					$i=1;
+					 foreach($res as $val){
+						$string = $i%5==0 ? 'class="m_r0"' : '';
+						echo '<li '.$string.'><a href="'.$val['url'].'"><img class="lazy" src="'.$val['thumbnail'].'" data-original="'.$val['thumbnail'].'" alt="'.$val['title'].'" title="'.$val['title'].'"><em>'.cut_str($val['title'],15).'</em></a></li>';
+						$i++;
+					   } 
+					?>										
+				</ul>               
+		      </div>		 
+		 </div>		 
+         <div class="clearfix"></div>		 
+		<!--友情链接-->
+		<div id="links">
+			<p>友情链接：</p>
+			 <ul>
+			 <?php
+			   $res = M('link')->field('weburl,webname')->order('sortrank ASC')->select();
+			   foreach($res as $val){
+                 echo '<li><a href="'.$val['weburl'].'" target="_blank">'.$val['webname'].'</a></li>';
+			   }
+			   ?>		 
+			 </ul>
+		</div>
+
+<?php include template('footer.htm');?>	

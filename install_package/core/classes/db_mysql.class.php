@@ -1,0 +1,450 @@
+<?php
+/**
+ *	文件名称：db_mysql.class.php
+ *  用途: 数据库操作类,用来对MySQL数据库的操作[mysql版]
+ *  作者：袁志蒙
+ *	编写时间：2013.12.18
+ *	最后修改时间：2016.05.18
+ *  版权所有：(c) 2014-2016 http://www.yzmcms.com All rights reserved.
+*/
+	
+class db_mysql{
+	
+	public  static $link = null;       //数据库连接资源句柄
+	private $table;                    //数据库表名 
+	private $key = array();            //存放条件语句
+	private $lastsql = '';             //存放sql语句
+	
+	
+	/**
+	 * 初始化链接数据库，并给表名赋值
+	 */
+	public function __construct($tablename){
+		if(self::$link == null){
+			self::$link = self::connect();
+		}		
+		$this->table = DB_PREFIX.$tablename;
+	}
+	
+
+	/**
+	 * 真正开启数据库连接
+	 * 			
+	 * @return resource mysql
+	 */	
+	public static function connect(){
+		self::$link = @mysql_connect(DB_HOST, DB_USER, DB_PASS);  //配置mysql服务器信息		
+		if(self::$link == false) exit("数据库链接失败!");        //数据库链接失败，退出
+		$db = mysql_select_db(DB_NAME, self::$link);            //选择数据库		
+		if($db == false)  exit("数据库选择失败!");              //数据库选择失败，退出                               
+		mysql_query('SET names utf8'); 	
+		return self::$link;
+	}	
+	
+	
+	/**
+	 * 内部方法：过滤函数 把用户传入变量中的引号加上转义字符
+	 * @param $value
+	 * @return string
+	 */	
+	private function safe_data($value){
+		if(MAGIC_QUOTES_GPC) $value = stripslashes($value);
+		return mysql_real_escape_string($value);
+	}
+	
+	/**
+	 * 内部方法：过滤数组，把不是表单的元素过滤掉
+	 * @param $arr
+	 * @return array
+	 */
+	private function del_arr($arr){
+        $re = array();		
+		if(!is_array($arr)) return false;		
+		$fields = $this->get_fields();			
+		foreach ($arr as $k => $v){
+			if(in_array($k,$fields)){
+				$re[$k] = $v;
+			}
+		}
+		return $re;
+	}
+
+	
+	/**
+	 * 内部方法：数据库查询执行方法
+	 * @param $sql 要执行的sql语句
+	 * @return 查询资源句柄
+	 */
+	private function execute($sql) {
+		$this->lastsql = $sql;
+		$res = mysql_query($sql) or $this->geterr($sql);
+		return $res;
+	}	
+	
+
+	/**
+	 * 组装where条件，将数组转换为SQL语句
+	 * @param array $where  要生成的数组,参数可以为数组也可以为字符串，建议数组。
+	 * return string
+	 */
+	public function where($arr = ''){
+		if(empty($arr)) {
+		    $this->geterr('where方法：where条件不能为空！'); 
+			return false;
+		}		
+		if(is_array($arr)) {
+			$args = func_get_args();
+			$str = '(';
+			foreach ($args as $v){
+				foreach($v as $k => $value){
+					$value = $this->safe_data($value);
+					if(!strpos($k,'>') && !strpos($k,'<') && !strpos($k,'=') && substr($value, 0, 1) != '%' && substr($value, -1) != '%'){ //where(array('age'=>'22'))
+						$str .= $k." = '".$value."' AND ";
+					}else if(substr($value, 0, 1) == '%' || substr($value, -1) == '%'){	//where(array('name'=>'%php%'))
+						$str .= $k." LIKE '".$value."' AND "; 
+					}else{
+						$str .= $k."'".$value."' AND ";      //where(array('age>'=>'22'))
+					}
+				}
+				$str = rtrim($str,' AND ').')';
+				$str .= ' OR (';
+			}
+			$str = rtrim($str,' OR (');
+			$this->key['where'] = $str;
+			return $this;
+		}else{
+			$this->key['where'] = str_replace('yzmcms_', DB_PREFIX, $arr);
+			return $this;
+		}
+	}
+	
+		
+	/**
+	 * 内部方法：查询部分，开始组装SQL
+	 * @param $name
+	 * @param $value
+	 * @return object
+	 */
+	public function __call($name,$value){
+		if(in_array($name,array('field','order','limit','group','having'))){
+			$this->key[$name] = $value[0];
+			return $this;
+		}else{
+			$this->geterr($name.'方法不存在！'); 
+		}
+	}
+	
+	
+	
+	/**
+	 * 执行添加记录操作
+	 * @param $data         要增加的数据，参数为数组。数组key为字段值，数组值为数据取值
+	 * @param $filter       第二个参数选填 如果为真值[1为真] 则开启实体转义
+	 * @return int/boolean  成功：返回自动增长的ID，失败：false
+	 */
+	public function insert($data,$filter = ''){
+		if(!is_array($data)) {
+		    $this->geterr('insert方法：传入的数据必须是以数组形式！'); 
+			return false;
+		}
+		$data = $this->del_arr($data);
+		$clo = '';
+		$vs = '';
+		if(!$filter){
+			foreach($data as $k => $v){
+				$clo .= $k.',';
+				$vs .= "'".$this->safe_data($v)."'".",";
+			}
+		}else{
+			foreach($data as $k => $v){
+				$clo .= $k.',';
+				$vs .= "'".htmlspecialchars($this->safe_data($v))."'".",";
+			}		
+		}
+		$clo = rtrim($clo,',');
+		$vs = rtrim($vs,',');
+		$sql = 'INSERT INTO '.$this->table.'('.$clo.') VALUES ('.$vs.')';
+		$this->execute($sql);
+		return mysql_insert_id();
+	}
+
+	/**
+	 * 执行删除记录操作
+	 * @param $where 		参数为数组，删除数据条件,不充许为空。
+	 * @param $many 		是否删除多个，多用在批量删除，取的主键在某个范围内，例如 $admin->delete(array(3,4,5), true);
+	 *                      结果为： DELETE FROM `yzmcms_admin` WHERE id IN (3,4,5);
+	 *
+	 * @return int          返回影响行数
+	 */
+	public function delete($where, $many = false){	
+		if(is_array($where) && !empty($where)){
+            if(!$many){
+				$this->where($where);   
+			}else{
+				$sql = '';
+				foreach($where as $v){
+					$sql .= intval($v).',';
+				}
+				$sql = rtrim($sql, ',');
+				$this->key['where'] = $this->get_primary().' IN ('.$sql.')';
+			}			
+			$sql = 'DELETE FROM `'.$this->table.'` WHERE '.$this->key['where'];
+		}else{
+			$this->geterr('delete方法：没有给定条件或条件不是数组！'); 
+			return false;
+		}
+		$this->execute($sql);
+		return mysql_affected_rows();
+	}
+
+	/**
+	 * 执行更新记录操作
+	 * @param $data 		要更新的数据内容，参数可以为数组也可以为字符串，建议数组。
+	 * 						为数组时数组key为字段值，数组值为数据取值
+	 * 						为字符串时[例：`name`='myname',`hits`=`hits`+1]。
+	 *						为数组时[例: array('name'=>'php','password'=>'123456')]						
+	 * @param $where 		更新数据时的条件,参数为数组类型
+	 * @param $filter 		第三个参数选填 如果为真值[1为真] 则开启实体转义
+	 * @return int          返回影响行数
+	 */		
+	public function update($data,$where = '',$filter = ''){	
+		if(is_array($where)) {
+			$this->where($where);
+            if(is_array($data)){
+				$data = $this->del_arr($data);				
+				$value = '';
+				if(!$filter){
+					foreach($data as $k => $v){
+						$value .= $k." = "."'".$this->safe_data($v)."'".",";
+					}
+				}else{
+					foreach($data as $k => $v){
+						$value .= $k." = "."'".htmlspecialchars($this->safe_data($v))."'".",";
+					}		
+				}		
+				$value=rtrim($value,',');				
+			}else{
+				$value=$data;		
+			}			
+				$sql = 'UPDATE '.$this->table.' SET '.$value.' WHERE '.$this->key['where'];
+				$this->execute($sql);
+				return mysql_affected_rows();		
+		}else{
+			$this->geterr('update方法：必须给定更新条件且必须是以数组形式！'); 
+			return false;
+		}	
+	}
+
+	
+	/**
+	 * 获取查询多条结果，返回二维数组
+	 * @return array
+	 */	
+	public function select(){
+		$rs = array();		
+		$field = isset($this->key['field']) ? str_replace('yzmcms_', DB_PREFIX, $this->key['field']) : ' * ';
+		$join = isset($this->key['join']) ? $this->key['join'] : '';
+		$where = isset($this->key['where']) ? ' WHERE '.$this->key['where'] : '';
+		$group = isset($this->key['group']) ? ' GROUP BY '.$this->key['group'] : '';
+		$having = isset($this->key['having']) ? ' HAVING '.$this->key['having'] : '';
+		$order = isset($this->key['order']) ? ' ORDER BY '.$this->key['order'] : '';
+		$limit = isset($this->key['limit']) ? ' LIMIT '.$this->key['limit'] : '';				
+		
+		$sql = 'SELECT '.$field.' FROM `'.$this->table.'`'.$join.$where.$group.$having.$order.$limit;
+		$selectquery = $this->execute($sql);
+		while($data = mysql_fetch_assoc($selectquery)){
+	      $rs[] = $data;
+	    }
+	    return $rs;
+	}
+
+	/**
+	 * 获取查询一条结果，返回一维数组
+	 * @return array
+	 */	
+	public function find(){
+		$field = isset($this->key['field']) ? str_replace('yzmcms_', DB_PREFIX, $this->key['field']) : ' * ';
+		$join = isset($this->key['join']) ? $this->key['join'] : '';
+		$where = isset($this->key['where']) ? ' WHERE '.$this->key['where'] : '';
+		$group = isset($this->key['group']) ? ' GROUP BY '.$this->key['group'] : '';
+		$having = isset($this->key['having']) ? ' HAVING '.$this->key['having'] : '';
+		$order = isset($this->key['order']) ? ' ORDER BY '.$this->key['order'] : '';
+		$limit = ' LIMIT 1';		
+		
+		$sql = 'SELECT '.$field.' FROM `'.$this->table.'`'.$join.$where.$group.$having.$order.$limit;
+		$findquery = $this->execute($sql);
+	    return mysql_fetch_assoc($findquery);
+	}
+	
+	/**
+	 * 链接查询
+	 * @param $join 	string SQL语句，如yzmcms_admin ON yzmcms_admintype.id=yzmcms_admin.id
+	 * @param $type 	可选参数,默认是inner
+	 * @return object
+	 */	
+	public function join($join, $type = 'INNER'){
+		$join = str_replace('yzmcms_', DB_PREFIX, $join);    //如果存在表前缀，则开启此项	 
+        $this->key['join'] = stripos($join,'JOIN') !== false ? $join : ' '.$type.' JOIN '.$join;
+	    return $this;
+	}		
+	
+	/**
+	 * 用于调试程序，输入SQL语句
+	 * @param $echo 	可选参数,默认是输入
+	 * @return string
+	 */	
+	public function lastsql($echo = true){
+		$sql = $this->lastsql;
+		if($echo)
+			echo '<div style="font-size:14px;text-align:left; border:1px solid #9cc9e0;line-height:25px; padding:5px 10px;color:#000;font-family:Arial, Helvetica,sans-serif;"><p><b>SQL：</b>'.$sql.'<p></div>'; 	
+		else
+			return $sql;		
+	}
+
+	/**
+	 * 自定义执行SQL语句
+	 * @param  $sql sql语句
+	 * @return （mysql_query返回值）
+	 */		
+	public function query($sql = ''){
+		 $sql = str_replace('yzmcms_', DB_PREFIX, $sql);       //如果存在表前缀，则开启此项
+         return $this->execute($sql);	  
+	}
+
+
+	/**
+	 * 返回一维数组，与query方法结合使用
+	 * @param  resource
+	 * @return array
+	 */		
+    public function fetch_array($query, $result_type = MYSQL_ASSOC) {
+		return mysql_fetch_array($query, $result_type);
+	}	
+
+	/**
+	 * 返回二维数组，与query方法结合使用
+	 * @param  resource
+	 * @return array
+	 */		
+    public function fetch_all($query, $result_type = MYSQL_ASSOC) {
+		$arr = array();
+		while($data = mysql_fetch_array($query, $result_type)) {
+			$arr[] = $data;
+		}
+		return $arr;
+	}
+	
+	
+	/**
+	 * 获取错误提示
+	 */		
+	private function geterr($msg = ''){
+		if(DB_DEBUG == 1){
+			echo '<div style="font-size:14px;text-align:left; border:1px solid #9cc9e0;line-height:25px; padding:5px 10px;color:#000;font-family:Arial, Helvetica,sans-serif;"><b> Error : </b>'. $msg .' <br /><b> MySQL Errno : </b>'. mysql_errno() .' <br /> <b>MySQL Error : </b> <span>'. mysql_error() .'</span></div>';
+			exit;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 返回记录行数。
+	 * @return int 
+	 */	
+	public function total(){
+		$join = isset($this->key['join']) ? $this->key['join'] : '';
+		$where = isset($this->key['where']) ? ' WHERE '.$this->key['where'] : '';		
+		$sql = 'SELECT COUNT(*) AS total FROM `'.$this->table.'`'.$join.$where;
+		$totquery = $this->execute($sql);
+		$total = mysql_fetch_assoc($totquery);   
+        return $total['total'];		
+	}
+
+	
+	/**
+	 * 获取数据表主键
+	 * @param $table 		数据表 可选
+	 * @return array
+	 */
+	public function get_primary($table = '') {
+		$table = empty($table) ? $this->table : $table;
+		$sql = "SHOW COLUMNS FROM `$table`";
+		$r = $this->execute($sql);
+		while($data = mysql_fetch_assoc($r)){
+			if($data['Key'] == 'PRI') break;
+		}
+		return $data['Field'];
+	}
+	
+
+	/**
+	 * 获取数据库 所有表
+	 * @return array 
+	 */		
+	public function list_tables() {
+		$tables = array();
+		$listqeury = $this->execute('SHOW TABLES');
+		while($r = $this->fetch_array($listqeury, MYSQL_NUM)) {
+			$tables[] = $r[0];
+		}
+		return $tables;
+	}	
+
+
+	/**
+	 * 获取表字段
+	 * @param $table 		数据表 可选
+	 * @return array
+	 */
+	public function get_fields($table = '') {
+		$table = empty($table) ? $this->table : $table;
+		$fields = array();
+		$sql = "SHOW COLUMNS FROM `$table`";
+		$r = $this->execute($sql);
+		while($data = mysql_fetch_assoc($r)){
+			$fields[] = $data['Field'];
+		}		
+		return $fields;
+	}
+
+	
+	/**
+	 * 检查表是否存在
+	 * @param $table 表名
+	 * @return boolean
+	 */
+	public function table_exists($table) {
+		$tables = $this->list_tables();
+		return in_array($table, $tables);
+	}
+
+
+	/**
+	 * 检查字段是否存在
+	 * @param $table 表名
+	 * @param $field 字段名
+	 * @return boolean
+	 */
+	public function field_exists($table, $field) {
+		$fields = $this->get_fields($table);
+		return in_array($field, $fields);
+	}
+		
+	
+	/**
+	 * 返回 MySQL 服务器版本信息
+	 * @return string 
+	 */	
+	public function version(){
+	    return mysql_get_server_info();	
+	}
+	
+	
+	/**
+	 * 关闭数据库连接
+	 */	
+	public function close(){
+	    return @mysql_close(self::$link);
+	}
+	
+}

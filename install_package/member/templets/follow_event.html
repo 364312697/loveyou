@@ -1,0 +1,37 @@
+<?php include('templets/header.html'); ?>
+<div class="w980 main">
+<?php include('templets/left.html'); ?>
+  <div class="main_right">
+	<div class="tit"><h3>TA的动态</h3></div>
+	<div class="main_cont">
+	  <form method="post" action="">
+		<table class="tablelist">
+			<thead>
+			<tr>
+			<th>用户名</th>
+			<th>事件</th>
+			<th>时间</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php 
+			   foreach($data as $val){
+			 ?>			
+			<tr>
+			<td><?php echo $val['username']?></td>
+			<td><?php echo $val['userevent']?></td>
+			<td><?php echo date('Y-m-d H:i:s',$val['eventtime'])?></td>
+			</tr> 
+			<?php 
+			   }		 
+			?>			
+			</tbody>
+		</table>
+	  </form>
+		<div class="page">
+			<span class="blue">共<?php echo $total?>条记录，当前<?php echo $page->getCpage().'/'.$page->total()?>页</span><span class="page_right"><?php echo $page->showFull(); ?></span>
+		</div>	  
+	</div>
+  </div>		  
+</div> 
+<?php include('templets/footer.html'); ?>

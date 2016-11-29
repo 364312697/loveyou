@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>单页内容</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/select.css" rel="stylesheet" type="text/css" />
+<link href="../common/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="../common/umeditor/third-party/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="../common/umeditor/umeditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="../common/umeditor/umeditor.min.js"></script>
+</head>
+<body>
+
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">单页内容</a></li>
+    </ul>
+    </div>
+    <div class="formbody">
+    <form action=""  method="post"  name="addsinglepage" onSubmit="return che()">
+		<div id="usual1" class="usual"> 
+	  
+		<ul class="forminfo">
+		<li class="clear"><label>标题<b>*</b></label><input name="title" id="atitle" type="text" class="dfinput" value="<?php echo $data["title"]?>" required/>
+		</li>
+		<li class="clear">内容<b>*</b></li>
+		<li class="clear">
+		<script type="text/plain" id="myEditor" style="width:800px;height:300px;" name="content"><?php echo $data["content"]?></script>		
+		<script type="text/javascript">
+			var um = UM.getEditor('myEditor');
+		</script>
+		</li>
+		<li><input name="dosubmit" type="submit" class="btn" value="点击保存"/></li>
+		</ul>
+		
+		</div> 
+    </form>   
+    </div>
+    <script type="text/javascript">		
+	function che(){
+		if(addsinglepage.atitle.value==""){
+			 alert("标题不能为空!");
+			return false;
+		}	
+		if(!UM.getEditor('myEditor').hasContents()){
+			 alert("内容不能为空!");
+			return false;
+		}
+	}
+	</script>
+
+</body>
+
+</html>

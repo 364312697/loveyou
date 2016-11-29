@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>留言查看与回复</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script>
+  window.parent.frames.topFrame.location.href="top.php";
+</script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="manage_words.php">留言反馈</a></li>
+    <li><a href="#">留言查看与回复</a></li>
+    </ul>
+    </div>
+
+  <div id="guestBook">
+    <dl class="book">
+     <dd>
+	 <form action="" method="post">
+	 <strong>前台显示：</strong> <label><input name="ischeck" type="radio" value="0" <?php if(!$gues['ischeck']) echo "checked='checked'"; ?> />隐藏</label>&nbsp;&nbsp;&nbsp;&nbsp;<label><input name="ischeck" type="radio" value="1" <?php if($gues['ischeck']) echo "checked='checked'"; ?>/>显示</label>
+	 <input name="subche" class="subche" type="submit" value="确定" />
+	</form>
+	</dd>
+     <dd><strong>主题：</strong><?php echo $gues['title']?></dd>
+     <dd><strong>主要内容：</strong><?php echo $gues['bookmsg']?></dd>
+     <dd><strong>联系人：</strong><?php echo $gues['name']?></dd>
+     <p><b>电子邮箱：<?php echo $gues['email']?></b><b>电话：<?php echo $gues['phone']?></b><b>QQ：<?php echo $gues['qq']?></b><b>地址：<?php echo $gues['address']?></b><b>IP:<?php echo $gues['ip']?></b><b>添加日期：<?php echo date("Y-m-d H:i:s",$gues['booktime'])?></b></p>
+    </dl>
+	<?php		
+		foreach($res as $value){
+		   echo "<b>管理员回复[".date("Y-m-d H:i:s",$value['booktime'])."]</b><br>";
+		   echo "<b style='color:#0072c6'>".$value['bookmsg']."</b><br>";
+		}
+	?>
+    <dl id="reply">
+     <form action="" method="post" name="reply" onSubmit="return CheckSubmit()">
+      <textarea name="bookmsg" cols="90" rows="7" id="bookmsg"></textarea>
+      <br>
+      <input type="hidden" name="replyid" value="<?php echo $gues['id']?>">
+      <input type="hidden" name="name" value="<?php echo $_SESSION['adminname']?>">
+      <input type="hidden" name="booktime" value="<?php echo time()?>">
+      <input type="hidden" name="ip" value="<?php echo getip()?>">
+      <input name="submit" class="substy" type="submit" value="留言回复" />
+     </form>
+    </dl>
+   </div>	
+<script language='javascript'>
+	function CheckSubmit()
+	{
+		if(document.reply.bookmsg.value=="")
+		{
+			document.reply.bookmsg.focus();
+			alert("回复的内容不能为空！");
+			return false;
+		}
+		return true;
+	}
+</script>	
+</body>
+</html>

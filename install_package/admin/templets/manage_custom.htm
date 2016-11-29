@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自定义变量</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">自定义变量</a></li>
+    </ul>
+	<a href="custom.php" class="add_link">[添加自定义变量]</a>
+    </div>    
+    <div class="rightinfo">
+	<div class="topstyle">
+       <p>自定义变量：是网站调用数据比较灵活的一种方式，管理员只需在后台添加自定义变量，前端则全部作用域中都可用.</p>
+       <p>例：后台添加变量名为 'qq' 的新变量，在前端调用方式为 &lt;?php echo $qq ?&gt;</p>
+    </div>		
+    <form method="post" action="">
+		<table class="tablelist">
+			<thead>
+			<tr>
+			<th width="50"><input type="checkbox"   onclick="cz(this)"/></th>
+			<th width="150">变量名</th>
+			<th>变量值</th>
+			<th width="150">添加时间</th>
+			<th width="150">操作</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php 			
+			   foreach($res as $val){
+			 ?>			
+			<tr>
+			<td><input name="fx[]" type="checkbox" value="<?php echo $val['id']?>" /></td>
+			<td><a href="custom.php?editid=<?php echo $val['id']?>"><?php echo $val['name']; ?></a></td>
+			<td><?php echo cut_str(htmlspecialchars($val['val']),100); ?></td>
+			<td><?php echo date("Y-m-d H:i:s",$val['inputtime'])?></td>
+			<td><a href="custom.php?editid=<?php echo $val['id']?>" class="tablelink">查看/修改</a></td>
+			</tr> 
+			<?php 
+			   }		 
+			?>			
+		   	<tr class="tablast">
+			 <td></td><td colspan="4"><input type="submit"  value="批量删除" onclick="return confirm('你确定要删除所选信息吗？')" name="pldel_sub"></td>
+			</tr>
+			</tbody>
+		</table>
+	</form>
+		<script>
+		var fx=document.getElementsByName("fx[]");
+		function cz(obj){
+		for(var i=0;i<fx.length;i++){
+			  fx[i].checked=obj.checked;
+			}
+		}
+		</script> 			   
+		<div class="pagin">
+			<div class="message">共<i class="blue"><?php echo $total?></i>条记录，共<i class="blue"><?php echo $page->total()?></i>页，当前显示第&nbsp;<i class="blue"><?php echo $page->getCpage()?>&nbsp;</i>页</div>
+			<div class="paginList">
+				<?php echo $page->showFull(); ?>
+			</div>
+		</div>
+    </div>
+</body>
+</html>

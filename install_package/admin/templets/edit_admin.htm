@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>修改管理员</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">修改管理员</a></li>
+    </ul>
+    </div>    
+    <div class="formbody">   
+      
+      <form action="" method="post" onSubmit="return check()">
+        <input type="hidden" name="uname" size="20" value="<?php echo $data['uname'];?>">	  
+        <div class="column_list">	  
+		<div class="col_line"><span>用 户 名：</span>	
+		<?php echo $data['uname'];?>
+		</div>
+		<div class="col_line"><span>密　　码：</span>	
+		<input type="password" name="pwd" size="20" value=""> <span style="color:#888">*不修改请留空</span>
+		</div>
+		<div class="col_line"><span>确认密码：</span>	
+		<input type="password" name="repwd" size="20" /> <span style="color:#888">*不修改请留空</span>
+		</div>
+		<div class="col_line"><span>电子邮箱：</span>	
+		<input type="email" name="email"  size="30" value="<?php echo $data['email'];?>" />
+		</div>			
+		<div class="col_line"><span>所属角色：</span>	
+		  <select name="usertype">
+		   <?php 
+		     foreach($type as $val){
+			    $str = $val['rank']==$data['usertype'] ? 'selected="selected"' : '';
+			    echo '<option value="'.$val['rank'].'" '.$str.'>'.$val['typename'].'</option>';
+			 }
+		   ?>
+		  </select>
+		</div>					  
+        </div>
+		<input type="submit" class="dosubmit" name="dosubmit" value="提交" />
+      </form>			 
+      
+    </div>
+    <script type="text/javascript">
+	function check(){
+			 if($("input[name='pwd']").val()!=''){
+				 if($("input[name='pwd']").val().length < 6){
+					 alert('密码长度不能低于6位！');
+					 return false;
+				 }
+				 if($("input[name='pwd']").val()!==$("input[name='repwd']").val()){
+					 alert('两次密码值不相等！');
+					 return false;
+				 }
+			 }else{
+			     return true;
+			 }		 
+	}
+	</script>	
+</body>
+</html>

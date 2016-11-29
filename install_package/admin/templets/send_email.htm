@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>发送邮件</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/member.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">发送邮件</a></li>
+	</ul>
+    </div>    
+    <div class="rightinfo">
+	<div class="topstyle">
+       <p>注意：发送邮件功能，需配置SMTP邮箱功能，<a href="email.php">点击配置</a>.</p>
+    </div>	
+	  <fieldset>
+		<legend>基本信息</legend>
+		    <form action="" method="post" onsubmit="return check_all()">
+			<table width="100%" class="table_form">
+				<tr>
+					<td width="80">收件人Email</td> 
+					<td><input type="text" name="email_to"  class="input_text"><span class="red">*</span></td>
+				</tr>
+				<tr>
+					<td>邮件标题</td> 
+					<td><input type="text" name="email_title" value="" class="input_text"><span class="red">*</span></td>
+				</tr>
+				<tr>
+					<td>邮件内容</td> 
+					<td>
+					 <textarea class="textarea" style="margin:5px 0;width:600px;height:200px" name="email_content"></textarea><span class="red">*</span>
+					</td>
+				</tr>			
+                <tr>
+					<td></td>
+					<td>
+					<input type="submit" name="dosubmit"  class="dosubmit" value="提交">
+					</td>
+				</tr>				
+			</table>
+            </form>			
+	  </fieldset>
+    </div>
+
+    <script type="text/javascript">
+	function check_all(){
+	    var pattern = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;  
+		if($("input[name='email_to']").val()=='' || !pattern.test($("input[name='email_to']").val())){
+		   alert('Email格式不正确！');
+		   return false;
+		}		
+        if($("input[name='email_title']").val()==''){
+		   alert('邮件标题不能为空！');
+		   return false;
+		}
+		if($("input[name='email_content']").val()==''){
+		   alert('邮件内容不能为空！');
+		   return false;
+		}
+        return true;			
+	}
+	</script>		
+</body>
+</html>

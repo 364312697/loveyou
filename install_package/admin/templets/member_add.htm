@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>添加会员</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/member.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="member_list.php">会员管理</a></li>
+    <li><a href="#">添加会员</a></li>
+	</ul>
+    </div>    
+    <div class="rightinfo">
+	  <fieldset>
+		<legend>基本信息</legend>
+		    <form action="" method="post" onsubmit="return check_all()">
+			<table width="100%" class="table_form">
+				<tr>
+					<td width="80">用户名</td> 
+					<td><input type="text" name="username"  class="input_text" id="username"><span class="red">*</span></td>
+				</tr>
+				<tr>
+					<td>密码</td> 
+					<td><input type="text" name="password" class="input_text" id="password" value=""><span class="red">*</span></td>
+				</tr>
+				<tr>
+					<td>昵称</td> 
+					<td><input type="text" name="nickname" id="nickname" value="" class="input_text"><span class="red">*</span></td>
+				</tr>
+				<tr>
+					<td>邮箱</td>
+					<td>
+					<input type="email" name="email" value="" class="input_text" id="email">
+					</td>
+				</tr>
+				<tr>
+					<td>手机号码</td>
+					<td>
+					<input type="text" name="mobile" value="" class="input_text" id="mobile">
+					</td>
+				</tr>
+				<tr>
+					<td>积分点数</td>
+					<td>
+					<input type="text" name="point" value="" class="input_text w60" id="point"><span class="red">*</span>
+					</td>
+				</tr>				
+				<tr>
+					<td>会员组</td>
+					<td>
+					<select name="groupid">
+					<?php 
+					 foreach($res as $val){
+					   echo "<option value=\"{$val['groupid']}\">{$val['name']}</option>";
+					 }
+					?>
+					</select><span class="red">* 会员组别与积分绑定</span>
+					</td>
+				</tr>
+                <tr>
+					<td></td>
+					<td>
+					<input type="submit" name="dosubmit" id="dosubmit" class="dosubmit" value="提交">
+					</td>
+				</tr>				
+			</table>
+            </form>			
+	  </fieldset>
+    </div>
+
+    <script type="text/javascript">
+	$(function(){
+	   $("#username").blur(function(){
+		  checkname();
+	   });
+	   
+	   $("#password").blur(function(){
+		  check_pass();
+	   });
+
+	   $("#nickname").blur(function(){
+		  check_nickname();
+	   });	
+
+	   $("#point").blur(function(){
+		  check_point();
+	   });		   
+	})	
+	function checkname(){
+		 if($("#username").val() != ''){
+		  $.ajax({   
+			type: "post",   
+			url: "<?php echo $webinfo['wroot']?>member/ajax/checkname.php",   
+			dataType: "html",
+			async:false,		//同步请求,可以根据实际情况关闭
+			data: "username="+$('#username').val(), 
+			beforeSend: function(){
+				 $('#username').next().html('<img src="./images/loading2.gif">');
+				 $("#dosubmit").attr({ disabled: "disabled" });  // 禁用按钮防止重复提交
+			},				
+			success: function(msg){  
+			 if(msg == '1'){
+				  $('#username').next().html('<img src="./images/ok.gif">');
+				  $('#username').removeClass('err'); 
+				  $("#dosubmit").removeAttr("disabled");					  
+			 }else if(msg == '-1'){
+				  $('#username').next().html('<img src="./images/error.gif">用户名已存在！');
+				  $('#username').addClass('err');	
+			 }else if(msg == '-2'){
+				  $('#username').next().html('<img src="./images/error.gif">用户名格式不正确！');
+				 $('#username').addClass('err');
+			 }else{
+				  $('#username').next().html('<img src="./images/error.gif">未知错误！');
+				  $('#username').addClass('err');
+			 }				 
+			} 
+		  });
+		 }else{
+		  $('#username').next().html('<img src="./images/error.gif">用户名不能为空！');
+		  $('#username').addClass('err');
+		 }		   
+	}	
+	function check_pass(){
+		 if($("#password").val().length < 6){
+			   $("#password").addClass("err");
+			   $('#password').next().html('<img src="images/error.gif">密码长度不能小于6位！');
+			   return false;
+		 }else{
+			   $("#password").removeClass("err");
+			   $('#password').next().html('<img src="images/ok.gif">');
+			   return true;
+		 }	
+	}	
+	function check_nickname(){
+		 if($("input[name='nickname']").val()==''){
+			   $("#nickname").addClass("err");
+			   $('#nickname').next().html('<img src="images/error.gif">昵称不能为空！');
+			   return false;
+		 }else{
+			   $("#nickname").removeClass("err");
+			   $('#nickname').next().html('<img src="images/ok.gif">');
+			   return true;
+		 }	
+	}	
+	function check_point(){
+		 if($("input[name='point']").val()=='' || isNaN($("input[name='point']").val())){
+			   $("#point").addClass("err");
+			   $('#point').next().html('<img src="images/error.gif">积分点数只能为数字类型！');
+			   return false;
+		 }else{
+			   $("#point").removeClass("err");
+			   $('#point').next().html('<img src="images/ok.gif">');
+			   return true;
+		 }	
+	}
+	function check_all(){
+	    checkname();
+        if(!check_pass()) return false;			 
+        if(!check_nickname()) return false;			 
+        if(!check_point()) return false;
+		if($("#username").hasClass("err")) return false;
+        return true;			
+	}
+	</script>		
+</body>
+</html>

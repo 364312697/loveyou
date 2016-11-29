@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>添加自定义表单</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/member.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="manage_diyform.php">自定义表单管理</a></li>
+    <li><a href="#">添加自定义表单</a></li>
+	</ul>
+    </div>    
+    <div class="rightinfo">
+	  <fieldset>
+		<legend>配置信息</legend>
+		    <form action="" method="post" onsubmit="return check_all()">
+			<table width="100%" class="table_form">
+				<tr>
+					<td width="140">表单名称</td> 
+					<td><input type="text" name="name"  class="input_text" id="name" onblur="check_name()"><span class="red">*</span></td>
+				</tr>
+				<tr>
+					<td>表名</td> 
+					<td><input type="text" name="tablename"  class="input_text" id="tablename" onblur="check_tablename()"><span class="red">*</span></td>
+				</tr>
+				<tr>
+					<td>表单状态</td> 
+					<td>
+					 <label><input type="radio" name="disabled" value="0" checked> 启用</label>
+					 <label><input type="radio" name="disabled" value="1"> 禁用</label>
+					</td>
+				</tr>
+				<tr>
+					<td>开启邮件提醒</td> 
+					<td>
+					 <label><input type="radio" name="sendmail" value="0" checked> 否</label>
+					 <label><input type="radio" name="sendmail" value="1"> 是</label> <span class="tips">[接收邮件的邮箱请到附加设置里设置]</span>
+					</td>
+				</tr>					
+				<tr>
+					<td>允许游客提交表单</td> 
+					<td>
+					 <label><input type="radio" name="allowvisitor" value="0" checked> 否</label>
+					 <label><input type="radio" name="allowvisitor" value="1"> 是</label>
+					</td>
+				</tr>				
+				<tr>
+					<td>表单简介</td> 
+					<td><textarea name="description" class="textarea" style="width:400px;height:100px;margin:5px 0;"></textarea></td>
+				</tr>	
+				<tr>
+					<td>列表页模板</td> 
+					<td>
+					<select id="list_template" name="list_template">
+					<option value='0'>请选择</option>
+				  <?php 
+				   foreach($list_template as $key => $val){
+					   echo '<option value='.$key.'>'.$val.'('.$key.')</option>';
+				   }
+				  ?>			
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td>显示页模板</td> 
+					<td>
+					<select name="show_template">
+					<option value="0">请选择</option>
+				  <?php 
+				   foreach($show_template as $key => $val){
+					   echo '<option value='.$key.'>'.$val.'('.$key.')</option>';
+				   }
+				  ?>
+					</select>
+					</td>
+				</tr>				
+                <tr>
+					<td></td>
+					<td>
+					<input type="submit" name="dosubmit" id="dosubmit" class="dosubmit" value="提交">
+					</td>
+				</tr>				
+			</table>
+            </form>			
+	  </fieldset>
+    </div>
+
+    <script type="text/javascript">
+	function check_name(){ 
+       var res = false;	
+		if($("input[name='name']").val()==''){
+		   $("#name").addClass("err");
+		   $('#name').next().html('<img src="images/error.gif">表单名称不能为空！');
+		   return false;
+		}else{
+		   $("#name").removeClass("err");
+		   $('#name').next().html('<img src="images/ok.gif">');
+		   res = true;	
+		}
+        return res;		
+	}
+	
+	function check_tablename(){ 
+       var res = false;	
+       var reg = /^[A-Za-z]+$/;	
+       if(!reg.test($("input[name='tablename']").val())){
+			   $("#tablename").addClass("err");
+			   $('#tablename').next().html('<img src="images/error.gif">表名不正确！');
+			   return false;
+		}else{
+			   $("#tablename").removeClass("err");
+			   $('#tablename').next().html('<img src="images/ok.gif">');
+		}
+		
+		$.ajax({   
+		type: "post",   
+		url: 'libs/ajax.class.php?a=check_model',   
+		dataType: "html",
+		async:false,
+		data: "tablename="+$('#tablename').val(),   
+		success: function(msg){
+		if(msg){
+			if(msg==0){
+				$('#tablename').addClass('err');
+				$('#tablename').next().html('<img src="images/error.gif">表名已经存在！');
+			}else if(msg==1){
+				$('#tablename').removeClass('err');
+				$('#tablename').next().html('<img src="images/ok.gif">');
+				res = true;	
+			}else{
+				alert('Ajax通信失败！');
+			}
+		}  
+		}  
+		});
+        return res;		
+	}
+	
+	function check_all(){	    	
+        if(!check_name() || !check_tablename()){
+		    return false;
+		}
+		if($("select[name='list_template']").val()=='0'){
+			alert('请选择列表页模板！');
+			return false;
+		}
+		if($("select[name='show_template']").val()=='0'){
+			alert('请选择显示页模板！');
+			return false;
+		}		
+        return true;			
+	}
+	</script>		
+</body>
+</html>

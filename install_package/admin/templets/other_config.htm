@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>网站附加信息设置</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body> 
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="#">网站附加信息设置</a></li>
+    </ul>
+    </div>
+	<div class="formbody">  
+		<table class="tableweb">
+			<thead>
+			<tr>
+			<th>参数说明</th>
+			<th>参数值</th>
+			</tr>
+			</thead>
+			<tbody>
+			 <form action="" method="post" onsubmit="return check_all()">
+		     <tr><td>缩略图默认宽度（px）：</td><td><input type="text" name="pic_wid" required="required" value="<?php echo $sysinfo["pic_wid"]?>"></td></tr>
+		     <tr><td>缩略图默认高度（px）：</td><td><input type="text" name="pic_hei" required="required" value="<?php echo $sysinfo["pic_hei"]?>"></td></tr>
+		     <tr><td>存放静态html目录：</td><td><input type="text" name="html_path" required="required" value="<?php echo $sysinfo["html_path"]?>"></td></tr>
+		     <tr><td>模板风格：</td><td><?php echo $html;?></td></tr>
+		     <tr><td>网站前端搜索时间限制（s）：</td><td><input type="text" required="required" name="search_limit" value="<?php echo $sysinfo["search_limit"]?>"></td></tr>
+		     <tr><td>是否开启前端留言功能：</td><td><label class="float"><input type="radio"  <?php echo $sysinfo["is_words"]?'checked':'' ?> value="1" name="is_words" class="radio">是</label class="float"><label><input class="radio" type="radio" <?php echo $sysinfo["is_words"]?'':'checked' ?> value="0" name="is_words" >否</label> </td></tr>
+		     <tr><td>列表页是否开启PATHINFO模式：</td><td><label class="float"><input type="radio"  value="1" <?php echo $sysinfo["is_pathinfo"]?'checked':'' ?> name="is_pathinfo" class="radio">是</label class="float"><label><input class="radio" type="radio" <?php echo $sysinfo["is_pathinfo"]?'':'checked' ?> value="0" name="is_pathinfo" >否</label> </td></tr>
+			 <tr><td>列表页是否开启REWRITE模式(伪静态模式)：</td><td><label class="float"><input type="radio"  value="1" <?php echo $sysinfo["is_rewrite"]?'checked':'' ?> name="is_rewrite" class="radio">是</label class="float"><label><input class="radio" type="radio" <?php echo $sysinfo["is_rewrite"]?'':'checked' ?> value="0" name="is_rewrite" >否</label>  &nbsp;&nbsp;[需要环境支持]</td></tr>
+			 <tr><td>内容页是否生成HTML：</td><td><label class="float"><input type="radio"  value="1" <?php echo $sysinfo["article_html"]?'checked':'' ?> name="article_html" class="radio">是</label class="float"><label><input class="radio" type="radio" <?php echo $sysinfo["article_html"]?'':'checked' ?> value="0" name="article_html" >否</label></td></tr>
+			 <tr><td>站点默认邮箱：</td><td><input type="text" name="default_email" value="<?php echo $sysinfo["default_email"]?>"> [用于接收“用户留言”等消息通知]</td></tr>
+			 <tr><td>是否开启图片水印：</td><td><label class="float"><input type="radio"  value="1" <?php echo $sysinfo["water_enable"]?'checked':'' ?> name="water_enable" class="radio">是</label class="float"><label><input class="radio" type="radio" <?php echo $sysinfo["water_enable"]?'':'checked' ?> value="0" name="water_enable" >否</label> </td></tr>
+			 <tr><td>水印图片路径：</td><td><input type="text" required="required" name="water_img" value="<?php echo $sysinfo["water_img"]?>"> [水印存放路径:/common/images/water/]</td></tr>
+			 <tr><td>水印的位置：</td><td>
+			 
+			 <label class="float"><input type="radio" value="0" <?php echo $sysinfo["water_pos"]==0 ? 'checked' : '' ?> name="water_pos" class="radio">随机</label class="float">
+			 <label class="float"><input type="radio" value="1" <?php echo $sysinfo["water_pos"]==1 ? 'checked' : '' ?> name="water_pos" class="radio">顶部居左</label class="float">
+			 <label class="float"><input type="radio" value="2" <?php echo $sysinfo["water_pos"]==2 ? 'checked' : '' ?> name="water_pos" class="radio">顶部居中</label class="float">
+			 <label class="float"><input type="radio" value="3" <?php echo $sysinfo["water_pos"]==3 ? 'checked' : '' ?> name="water_pos" class="radio">顶部居右</label class="float">
+			 <label class="float"><input type="radio" value="4" <?php echo $sysinfo["water_pos"]==4 ? 'checked' : '' ?> name="water_pos" class="radio">中部居左</label class="float">
+			 <label class="float"><input type="radio" value="5" <?php echo $sysinfo["water_pos"]==5 ? 'checked' : '' ?> name="water_pos" class="radio">中部居中</label class="float">
+			 <label class="float"><input type="radio" value="6" <?php echo $sysinfo["water_pos"]==6 ? 'checked' : '' ?> name="water_pos" class="radio">中部居右</label class="float">
+			 <label class="float"><input type="radio" value="7" <?php echo $sysinfo["water_pos"]==7 ? 'checked' : '' ?> name="water_pos" class="radio">底部居左</label class="float">
+			 <label class="float"><input type="radio" value="8" <?php echo $sysinfo["water_pos"]==8 ? 'checked' : '' ?> name="water_pos" class="radio">底部居中</label class="float">
+			 <label class="float"><input type="radio" value="9" <?php echo $sysinfo["water_pos"]==9 ? 'checked' : '' ?> name="water_pos" class="radio">底部居右</label class="float">
+			 
+			 </td></tr>
+		     <tr class="buttr"><td colspan="2"><input type="submit" name="sub" class="but" value="确定"></td></tr>
+		     </form>
+			</tbody>
+		</table>
+    </div> 
+    <script type="text/javascript">
+	function check_all(){		
+        if($("input[name='pic_wid']").val()=='' || isNaN($("input[name='pic_wid']").val())){
+			alert('缩略图宽度只能为数字！');
+			return false;
+		}
+		if($("input[name='pic_hei']").val()=='' || isNaN($("input[name='pic_hei']").val())){
+			alert('缩略图高度只能为数字！');
+			return false;
+		}
+		if($("input[name='search_limit']").val()=='' || isNaN($("input[name='search_limit']").val())){
+			alert('前端搜索时间只能为数字！');
+			return false;
+		}
+		if($("input[name='water_img']").val()==''){
+			alert('水印图片路径不能为空！');
+			return false;
+		}
+        return true;			
+	}
+	</script>	
+	
+</body>
+</html>

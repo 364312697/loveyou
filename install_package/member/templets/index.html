@@ -1,0 +1,22 @@
+<?php include('templets/header.html'); ?>
+<div class="w980 main">
+<?php include('templets/left.html'); ?>
+  <div class="main_right">
+	<div class="tit"><h3>基本资料</h3></div>
+	<div class="main_cont">
+	  <div class="userimg"><a href="user_pic.php" title="修改头像"><img src="<?php echo $userpic; ?>"></a><p><?php echo $username; ?></p></div>
+	  <div class="usertext">
+	   <ul>
+		<li><b>用户名</b>： <?php echo $username; ?> <a href="account.php">修改资料</a></li>
+		<li><b>积　分</b>： <?php echo $point; ?></li>
+		<li><b>会员等级</b>： <?php echo $groupname; echo $icon ? ' <img src="../common/images/icon/'.$icon.'" height="15">' : '';?></li>
+		<li><b>注册时间</b>： <?php echo date('Y-m-d H:i:s',$regdate); ?></li>
+		<li><b>绑定邮箱</b>： <?php echo $email_status ? $email.' <span class="green">[已验证]</span>' : $email; ?></li>
+		<li><b>登陆次数</b>： <?php echo $loginnum; ?> 次</li>
+		<li><b>上次登录时间</b>： <?php echo date('Y年m月d日 H:i:s',$lastdate); ?> [ IP地址： <?php echo $lastip; ?> ] </li>
+	   </ul>
+	  </div>
+	</div>
+  </div>		  
+</div>
+<?php include('templets/footer.html'); ?>

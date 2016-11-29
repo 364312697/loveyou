@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>采集管理 - 内容导入</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link href="css/member.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+
+<body>
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="main.php">首页</a></li>
+    <li><a href="manage_collection.php">采集节点管理</a></li>	
+    <li><a href="collection_list.php">采集列表</a></li>	
+    <li><a href="#">内容导入</a></li>
+    </ul>
+    </div>
+    <div class="rightinfo">
+	<div class="topstyle">
+       <p>注意：内容导入会将没有采集内容或内容为空的文档过滤掉。</p>
+    </div>	
+	    <form action="" method="post" onsubmit="return check()">
+		<div class="column_list">	           		
+			<fieldset>
+				<legend>新建发布方案</legend>
+				
+				<table width="100%" class="table_form">
+					<tr>
+						<td width="120">选择栏目：</td> 
+						<td>
+						<?php  echo formselect('catid'); ?>
+						</td>
+					</tr>
+					<tr>
+						<td width="120">自动提取摘要：</td> 
+						<td>
+						<label><input class="radio"  type="radio" name="auto_abstract" checked value="1"> 是</label>&nbsp;
+						<label><input class="radio"  type="radio" name="auto_abstract" value="0"> 否</label>
+						</td>
+					</tr>
+					<tr>
+						<td width="120">自动提取缩略图：</td> 
+						<td>
+						<label><input class="radio"  type="radio" name="auto_thumb" value="1"> 是</label>&nbsp;
+						<label><input class="radio"  type="radio" name="auto_thumb" checked value="0"> 否</label>
+						</td>
+					</tr>
+					<tr>
+						<td width="120">作者昵称：</td> 
+						<td>
+						<input type="text" name="nickname" value="管理员"></input>
+						</td>
+					</tr>
+					<tr>
+						<td width="120">点击量：</td> 
+						<td>
+						<input type="text" name="click" value="0"></input>
+						</td>
+					</tr>
+					<tr>
+						<td width="120">来源：</td> 
+						<td>
+						<input type="text" name="source" value="原创"></input>
+						</td>
+					</tr>					
+				</table>
+				
+			</fieldset>	
+            		
+	    </div>
+        <input type="submit" class="dosubmit" name="dosubmit" value="提交" />
+		</form>			
+    </div>
+	
+    <script type="text/javascript">
+	function check(){
+             if($("#sel").val()==0){
+				 alert("请选择文章栏目!");
+				 return false;
+			 }
+             if($("input[name='nickname']").val()==''){
+				 alert("作者昵称不能为空!");
+				 return false;
+			 }			 
+	}
+	</script>	
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	  <title><?php echo isset($title) ? $title : '会员中心'; ?></title>
+	  <?php 
+	    $cssarr = isset($cssarr) ? $cssarr : array();
+	    $jsarr = isset($jsarr) ? $jsarr : array();
+	    foreach($cssarr as $val){
+		   echo '<link href="templets/style/'.$val.'.css" rel="stylesheet" type="text/css" />';
+		}
+		foreach($jsarr as $val){
+		   echo '<script type="text/javascript" src="templets/js/'.$val.'.js"></script>';
+		}
+	  ?>
+  </head>
+  <body>
+		<div class="w980 head">
+		  <div class="right"><a href="../">回到首页</a></div>
+		  <a href="index.php" class="current">会员中心</a> 欢迎你： <?php echo $username; ?>  <a href="login.php?zx=out">退出</a>
+		</div>
+		<div class="nav">
+		   <div class="w980">
+		     <a href="index.php" class="current ucenter">会员中心</a><a href="myhome.php?userid=<?php echo $userid?>" class="set" target="_blank">个人主页</a><a href="messages.php" class="msg">消息中心</a>
+		   </div>
+		</div>
