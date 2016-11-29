@@ -1,21 +1,39 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>不是偷的好吗</title>
+<title>my world</title>
 </head>
-<body>
-<script type="text/javascript">
-if(confirm("你不相信是我写的吗"))
-{
-        alert("我很生气");
+<style type="text/css">
+.aaa{position: absolute; 
+left: 50%;
+top:50%; 
+height: 151px;width:400; 
+margin-left: -200px;margin-top:-100px; 
 }
-else
-{
-        alert("就是我写的邱舒儿");
+</style>
+
+<script type="text/javascript">
+function password(){
+    var pwd1=document.getElementById("pwd").value;
+    var password1="950317";
+    if(pwd1==password1){
+    	alert("登录成功！");
+    	}else{
+    	alert("密码错误，登录失败！");
+    	}
 }
 </script>
-
-
+<body>
+<div class="aaa">
+<div>
+<tr>
+<td> <input type="password" name="pwd" id="pwd"  /></td>
+<td><input type="button" onclick="password();" value="确认"  /></td>
+</tr>
+</div>
+</div>
 </body>
 </html>
