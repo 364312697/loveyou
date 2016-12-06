@@ -1,49 +1,109 @@
-<html>
-    <head>
-        <meta content="@author @ken @1039110278"/>
-        <meta content="转载请注明"/>
-        <meta charset="utf-8"/>
-        <link rel="stylesheet" href="style/base.css" type="text/css"/>
-        <script src="js/index.js" type="text/javascript"></script>
-        <title>留言墙测试</title>
-    </head>
-    <body>
-        <div class="main">
-            
-            <div name="note" class="note">
-                <div class="nhead" style="background-image: url(./images/a5_1.gif);">
-                    2014-11-12
-                </div>
-                <div class="nbody" style="background-image: url(./images/a5_2.gif);">
-                     你最孤独的时刻是什么？一个人去吃自助餐 取餐回来后发现餐具已被服务员收走.... 
-                </div>
-                <div class="nfoot" style="background-image: url(./images/a5_3.gif);">
-                    <div class="moodpic">
-                        <img src="images/17.gif"/>
-                    </div>
-                    <div class="username">
-                        Ken
-                    </div>
-                </div>
-            </div>
-            
-             <div name="note" class="note">
-                <div class="nhead" style="background-image: url(./images/a1_1.gif);">
-                    2014-11-12
-                </div>
-                <div class="nbody" style="background-image: url(./images/a1_2.gif);">
-                    哪件事，让你对自己的无知感到震惊？小的时候写作文要写笔名，我写的一直是“中华绘图铅笔”。
-                </div>
-                <div class="nfoot" style="background-image: url(./images/a1_3.gif);">
-                    <div class="moodpic">
-                        <img src="images/3.gif"/>
-                    </div>
-                    <div class="username">
-                        Ken
-                    </div>
-                </div>
-            </div>
-            
-        </div>
-    </body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>HouDun许愿墙</title>
+<link rel="stylesheet" href="css/index.css" />
+<script type="text/javascript" src='js/jquery-1.7.2.min.js'></script>
+<script type="text/javascript" src='js/index.js'></script>
+</head>
+<body>
+
+	<div id='top'>
+		<span id='send'></span>
+	</div>
+	
+	<div id='main'>
+		<dl class='paper a1'>
+			<dt>
+				<span class='username'>后盾网</span>
+				<span class='num'>No.00001</span>
+			</dt>
+			<dd class='content'>大家今天要好好把后台布局完成大家今天要好好把后台布局完成大家今天要好好把后台布局完成</dd>
+			<dd class='bottom'>
+				<span class='time'>今天08:30</span>
+				<a href="" class='close'></a>
+			</dd>
+		</dl>
+		<dl class='paper a2'>
+			<dt>
+				<span class='username'>后盾网</span>
+				<span class='num'>No.00001</span>
+			</dt>
+			<dd class='content'>大家今天要好好把后台布局完成大家今天要好好把后台布局完成大家今天要好好把后台布局完成</dd>
+			<dd class='bottom'>
+				<span class='time'>今天08:30</span>
+				<a href="" class='close'></a>
+			</dd>
+		</dl>
+		<dl class='paper a3'>
+			<dt>
+				<span class='username'>后盾网</span>
+				<span class='num'>No.00001</span>
+			</dt>
+			<dd class='content'>大家今天要好好把后台布局完成大家今天要好好把后台布局完成大家今天要好好把后台布局完成</dd>
+			<dd class='bottom'>
+				<span class='time'>今天08:30</span>
+				<a href="" class='close'></a>
+			</dd>
+		</dl>
+		<dl class='paper a4'>
+			<dt>
+				<span class='username'>后盾网</span>
+				<span class='num'>No.00001</span>
+			</dt>
+			<dd class='content'>大家今天要好好把后台布局完成大家今天要好好把后台布局完成大家今天要好好把后台布局完成</dd>
+			<dd class='bottom'>
+				<span class='time'>今天08:30</span>
+				<a href="" class='close'></a>
+			</dd>
+		</dl>
+		<dl class='paper a5'>
+			<dt>
+				<span class='username'>后盾网</span>
+				<span class='num'>No.00001</span>
+			</dt>
+			<dd class='content'>大家今天要好好把后台布局完成大家今天要好好把后台布局完成大家今天要好好把后台布局完成</dd>
+			<dd class='bottom'>
+				<span class='time'>今天08:30</span>
+				<a href="" class='close'></a>
+			</dd>
+		</dl>
+	</div>
+
+	<div id='send-form'>
+		<p class='title'><span>许下你的愿望</span><a href="" id='close'></a></p>
+		<form action="" name='wish'>
+			<p>
+				<label for="username">昵称：</label>
+				<input type="text" name='username' id='username'/>
+			</p>
+			<p>
+				<label for="content">愿望：(您还可以输入&nbsp;<span id='font-num'>50</span>&nbsp;个字)</label>
+				<textarea name="content" id='content'></textarea>
+				<div id='phiz'>
+					<img src="images/phiz/zhuakuang.gif" alt="抓狂" />
+					<img src="images/phiz/baobao.gif" alt="抱抱" />
+					<img src="images/phiz/haixiu.gif" alt="害羞" />
+					<img src="images/phiz/ku.gif" alt="酷" />
+					<img src="images/phiz/xixi.gif" alt="嘻嘻" />
+					<img src="images/phiz/taikaixin.gif" alt="太开心" />
+					<img src="images/phiz/touxiao.gif" alt="偷笑" />
+					<img src="images/phiz/qian.gif" alt="钱" />
+					<img src="images/phiz/huaxin.gif" alt="花心" />
+					<img src="images/phiz/jiyan.gif" alt="挤眼" />
+				</div>
+			</p>
+			<span id='send-btn'></span>
+		</form>
+	</div>
+
+<!--[if IE 6]>
+<script type="text/javascript" src="js/iepng.js"></script>
+<script type="text/javascript">
+DD_belatedPNG.fix('#send,#close,.close');
+</script>
+<![endif]-->
+
+</body>
 </html>

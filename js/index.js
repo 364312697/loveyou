@@ -1,189 +1,143 @@
-/*
- *下面拖动代码来源于http://www.newxing.com/Tech/WebDevelop/JavaScript/472.html
- *在此感谢原作者，转载请声明来源
- *@author @ken @1039110278
- */
-Number.prototype.NaN0=function(){return isNaN(this)?0:this;}
-var iMouseDown  = false;
-var dragObject  = null;
-var curTarget   = null;
-var pageMaxNotes=50;
+$(function () {
 
-function makeDraggable(item){
-    if(!item) return;
-    item.onmousedown = function(ev){
-        dragObject  = this;
-        mouseOffset = getMouseOffset(this, ev);
-        return false;
-    }
-}
+	$( '#main' ).height( $( window ).height() - $( '#top' ).height() - 45);
 
-function getMouseOffset(target, ev){
-    ev = ev || window.event;
+	var paper = $( '.paper' );
+	var FW = $( window ).width();
+	var FH = $( '#main' ).height();
+	for (var i = 0; i < paper.length; i++) {
+		var obj = paper.eq(i);
+		obj.css( {
+			left : parseInt(Math.random() * (FW - obj.width())) + 'px',
+			top : parseInt(Math.random() * (FH - obj.height())) + 'px'
+		} );
+		drag(obj, $( 'dt', obj ));
+	}
 
-    var docPos    = getPosition(target);
-    var mousePos  = mouseCoords(ev);
-    return {x:mousePos.x - docPos.x, y:mousePos.y - docPos.y};
-}
+	paper.click( function () {
+		$( this ).css( 'z-index', 1 ).siblings().css( 'z-index', 0 );
+	} );
 
-function getPosition(e){
-    var left = 0;
-    var top  = 0;
-    while (e.offsetParent){
-        left += e.offsetLeft + (e.currentStyle?(parseInt(e.currentStyle.borderLeftWidth)).NaN0():0);
-        top  += e.offsetTop  + (e.currentStyle?(parseInt(e.currentStyle.borderTopWidth)).NaN0():0);
-        e     = e.offsetParent;
-    }
+	$( '.close' ).click( function () {
+		$( this ).parents( 'dl' ).fadeOut('slow');
+		return false;
+	} );
 
-    left += e.offsetLeft + (e.currentStyle?(parseInt(e.currentStyle.borderLeftWidth)).NaN0():0);
-    top  += e.offsetTop  + (e.currentStyle?(parseInt(e.currentStyle.borderTopWidth)).NaN0():0);
+	$( '#send' ).click( function () {
+		$( '<div id="windowBG"></div>' ).css( {
+			width : $(document).width(),
+ 			height : $(document).height(),
+ 			position : 'absolute',
+ 			top : 0,
+ 			left : 0,
+ 			zIndex : 998,
+ 			opacity : 0.3,
+ 			filter : 'Alpha(Opacity = 30)',
+ 			backgroundColor : '#000000'
+		} ).appendTo( 'body' );
 
-    return {x:left, y:top};
+		var obj = $( '#send-form' );
+		obj.css( {
+			left : ( $( window ).width() - obj.width() ) / 2,
+			top : $( document ).scrollTop() + ( $( window ).height() - obj.height() ) / 2
+		} ).fadeIn();
+	} );
 
-}
+	$( '#close' ).click( function () {
+		$( '#send-form' ).fadeOut( 'slow', function () {
+			$( '#windowBG' ).remove();
+		} );
+		return false;
+	} );
+	
 
-function mouseCoords(ev){
-    if(ev.pageX || ev.pageY){
-        return {x:ev.pageX, y:ev.pageY};
-    }
-    return {
-        x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
-        y:ev.clientY + document.body.scrollTop  - document.body.clientTop
-    };
-}
+	$( 'textarea[name=content]' ).keyup( function () {
+		var content = $(this).val();
+		var lengths = check(content);  //调用check函数取得当前字数
 
-function mouseDown(ev){
-    ev         = ev || window.event;
-    var target = ev.target || ev.srcElement;
+		//最大允许输入50个字
+		if (lengths[0] >= 50) {
+			$(this).val(content.substring(0, Math.ceil(lengths[1])));
+		}
 
-    if(target.onmousedown || target.getAttribute('DragObj')){
-        return false;
-    }
-}
+		var num = 50 - Math.ceil(lengths[0]);
+		var msg = num < 0 ? 0 : num;
+		//当前字数同步到显示提示
+		$( '#font-num' ).html( msg );
+	} );
 
-function mouseUp(ev){
+	$( '#phiz img' ).click( function () {
+		var phiz = '[' + $( this ).attr('alt') + ']';
+		var obj = $( 'textarea[name=content]' );
+		obj.val(obj.val() + phiz);
+	} );
 
-    dragObject = null;
-
-    iMouseDown = false;
-}
-
-function mouseMove(ev){
-    ev         = ev || window.event;
-
-    /*
-    We are setting target to whatever item the mouse is currently on
-
-    Firefox uses event.target here, MSIE uses event.srcElement
-    */
-    var target   = ev.target || ev.srcElement;
-    var mousePos = mouseCoords(ev);
-    
-
-    if(dragObject){
-        dragObject.style.position = 'absolute';
-        dragObject.style.top      = mousePos.y - mouseOffset.y;
-        dragObject.style.left     = mousePos.x - mouseOffset.x;
-        if(dragObject.style.zIndex!=pageMaxNotes)
-        {
-            pageMaxNotes++;
-            dragObject.style.zIndex=pageMaxNotes;
-        }
-    }
-
-    // track the current mouse state so we can compare against it next time
-    lMouseState = iMouseDown;
-
-    // this prevents items on the page from being highlighted while dragging
-    if(curTarget || dragObject) return false;
-}
-
-document.onmousemove = mouseMove;
-document.onmousedown = mouseDown;
-document.onmouseup   = mouseUp;
+});
 
 /**
- * @author Mr.Think
- * @author blog http://mrthink.net/
- * @2011.01.27
- * 可自由转载及使用,但请注明版权归属
- */
-function fadeIn(elem, speed, opacity){
-        //底层共用
-    var iBase = {
-        Id: function(name){
-            return document.getElementById(name);
-        },
-		//设置元素透明度,透明度值按IE规则计,即0~100
-        SetOpacity: function(ev, v){
-            ev.filters ? ev.style.filter = 'alpha(opacity=' + v + ')' : ev.style.opacity = v / 100;
-        }
-    }
-    
-       speed = speed || 20;
-        opacity = opacity || 100;
-      //显示元素,并将元素值为0透明度(不可见)
-        elem.style.display = 'block';
-        iBase.SetOpacity(elem, 0);
-       //初始化透明度变化值为0
-       var val = 0;
-      //循环将透明值以5递增,即淡入效果
-      (function(){
-          iBase.SetOpacity(elem, val);
-            val += 5;
-           if (val <= opacity) {
-               setTimeout(arguments.callee, speed)
-            }
-        })();
-   }
+* 元素拖拽
+* @param  obj		拖拽的对象
+* @param  element 	触发拖拽的对象
+*/
+function drag (obj, element) {
+	var DX, DY, moving;
 
-/*
- *生成随机数
- */
-function GetRandomNum(Min,Max)
-{   
-    var Range = Max - Min;   
-    var Rand = Math.random();   
-    return(Min + Math.round(Rand * Range));   
-} 
+	element.mousedown(function (event) {
+		obj.css( {
+			zIndex : 1,
+			opacity : 0.5,
+ 			filter : 'Alpha(Opacity = 50)'
+		} );
 
-/*
- *当文档加载完毕时将对留言条进行初始化
+		DX = event.pageX - parseInt(obj.css('left'));	//鼠标距离事件源宽度
+		DY = event.pageY - parseInt(obj.css('top'));	//鼠标距离事件源高度
+
+		moving = true;	//记录拖拽状态
+	});
+
+	$(document).mousemove(function (event) {
+		if (!moving) return;
+
+		var OX = event.pageX, OY = event.pageY;	//移动时鼠标当前 X、Y 位置
+		var	OW = obj.outerWidth(), OH = obj.outerHeight();	//拖拽对象宽、高
+		var DW = $(window).width(), DH = $(window).height();  //页面宽、高
+
+		var left, top;	//计算定位宽、高
+
+		left = OX - DX < 0 ? 0 : OX - DX > DW - OW ? DW - OW : OX - DX;
+		top = OY - DY < 0 ? 0 : OY - DY > DH - OH ? DH - OH : OY - DY;
+
+		obj.css({
+			'left' : left + 'px',
+			'top' : top + 'px'
+		});
+
+	}).mouseup(function () {
+		moving = false;	//鼠标抬起消取拖拽状态
+
+		obj.css( {
+			opacity : 1,
+ 			filter : 'Alpha(Opacity = 100)'
+		} );
+
+	});
+}
+
+/**
+ * 统计字数
+ * @param  字符串
+ * @return 数组[当前字数, 最大字数]
  */
-window.onload = function() {
-    
-    //取得所有的note类留言条
-    var notes=document.getElementsByName("note");
-    
-    //此时note所在层最小为49，最高层为49+note数量
-    pageMaxNotes=49+notes.length;
-    
-    //得到此时文档宽度
-    var bodyWidthMain = document.body.offsetWidth;
-    
-    //因为留言条的拖动是相对于整个body，而定位是相对于这个main
-    //左右宽度body与main的差值
-    var baseOffsetLeft = (bodyWidthMain-960)/2;
-    
-    //上下高度body与main的差值
-    var baseOffsetTop = 0;
-    
-    //留言条出现的最低位置
-    var maxHeight = 960-225;
-    
-    //留言条出现的最右位置
-    
-    var maxWidth = 960-235;
-        
-    for(var i=0;i<notes.length;i++)
-    {
-        makeDraggable(notes[i]);
-        
-        //随机出现位置
-        notes[i].style.top = baseOffsetTop + GetRandomNum(0 , maxHeight);
-        notes[i].style.left =baseOffsetLeft + GetRandomNum(0 ,maxWidth);
-        
-        //位置确定后淡入
-        fadeIn(notes[i]);
-    }
+function check (str) {
+	var num = [0, 50];
+	for (var i=0; i<str.length; i++) {
+		//字符串不是中文时
+		if (str.charCodeAt(i) >= 0 && str.charCodeAt(i) <= 255){
+			num[0] = num[0] + 0.5;//当前字数增加0.5个
+			num[1] = num[1] + 0.5;//最大输入字数增加0.5个
+		} else {//字符串是中文时
+			num[0]++;//当前字数增加1个
+		}
+	}
+	return num;
 }
